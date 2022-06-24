@@ -1,5 +1,6 @@
 package it.unicam.cs.PAWNProjectBackend.service;
 
+
 public class GestoreSpiaggia {
 
     private DBMSController associatedDBMSController;

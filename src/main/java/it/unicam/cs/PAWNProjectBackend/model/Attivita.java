@@ -5,12 +5,11 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.neo4j.core.schema.GeneratedValue;
 import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.Node;
+import org.springframework.data.neo4j.core.schema.Relationship;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Objects;
+import java.util.*;
 
 @Data
 @NoArgsConstructor
@@ -29,9 +28,9 @@ public class Attivita {
     private String animatore;
     private int oreDurata;
 
-    //TODO trasformare in collegamento
-    private HashMap<Attrezzatura,Integer> attrezzatureAssociate;
-
+    //TODO implementare questa cosa anche per i metodi
+    @Relationship(type = "QUANTITA_ATTREZZATURA",direction = Relationship.Direction.OUTGOING)
+    private Collection<AttivitaAttrezzaturaRel> quantitaAttrezzatura;
 
     @Override
     public boolean equals(Object o) {
@@ -47,7 +46,7 @@ public class Attivita {
     }
 
     public Attivita(String nome, String descrizione, Date data, int maxPartecipanti, String animatore, int oreDurata, int fasciaOraria){
-        this.attrezzatureAssociate = new HashMap<>();
+        this.quantitaAttrezzatura = new ArrayList<>();
         this.nome = nome;
         this.descrizione = descrizione;
         this.data = data;

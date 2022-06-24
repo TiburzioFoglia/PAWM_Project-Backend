@@ -1,5 +1,7 @@
 package it.unicam.cs.PAWNProjectBackend.service;
 
+import it.unicam.cs.PAWNProjectBackend.model.Attivita;
+import it.unicam.cs.PAWNProjectBackend.model.Attrezzatura;
 import it.unicam.cs.PAWNProjectBackend.model.ListaAttivita;
 
 import java.text.ParseException;

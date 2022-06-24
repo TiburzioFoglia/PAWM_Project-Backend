@@ -2,6 +2,15 @@ package it.unicam.cs.PAWNProjectBackend.service;
 
 import java.util.*;
 
+import it.unicam.cs.PAWNProjectBackend.model.Coordinate;
+import it.unicam.cs.PAWNProjectBackend.model.Ombrellone;
+import it.unicam.cs.PAWNProjectBackend.model.Spiaggia;
+import it.unicam.cs.PAWNProjectBackend.model.TipologiaOmbrellone;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
+
+@Service
+@Scope("singleton")
 public class HandlerSpiaggia {
 
     private final Spiaggia spiaggiaGestita;
@@ -181,8 +190,8 @@ public class HandlerSpiaggia {
             for (Ombrellone currentOmbrellone : currentRow) {
                 System.out.println("Posizione numero: " + posizioneOmbrelloneCounter);
                 if (currentOmbrellone != null) {
-                    System.out.println("\t" + " (Coordinate " + currentOmbrellone.getLocation().getxAxis() + " " + currentOmbrellone.getLocation().getyAxis() + " )");
-                    System.out.println("\t" + " Id ombrellone: " + currentOmbrellone.getIdOmbrellone());
+                    System.out.println("\t" + " (Coordinate " + currentOmbrellone.getLocation().getXAxis() + " " + currentOmbrellone.getLocation().getYAxis() + " )");
+                    System.out.println("\t" + " Id ombrellone: " + currentOmbrellone.getId());
                     System.out.println("\t" + " Tipo: " + currentOmbrellone.getNomeTipo() + " ");
                     System.out.println("\t" + " Numero lettini associati: " + currentOmbrellone.getNumeroLettiniAssociati() + " ");
                 }
@@ -197,7 +206,7 @@ public class HandlerSpiaggia {
             for (Ombrellone currentOmbrellone : currentRow) {
                 if(currentOmbrellone == null)
                     continue;
-                if(currentOmbrellone.getIdOmbrellone() == idOmbrellone) {
+                if(currentOmbrellone.getId() == idOmbrellone) {
                     return currentOmbrellone;
                 }
             }
@@ -220,7 +229,7 @@ public class HandlerSpiaggia {
         }
         String tipo = this.sceltaTipoOmbrellone(listaTipologieUtilizzabili);
         if(tipo == null) return false;
-        this.spiaggiaGestita.aggiungiOmbrellone(new Ombrellone(tipo,coordinateScelte,this.spiaggiaGestita.getNewIdOmbrellone()));
+        this.spiaggiaGestita.aggiungiOmbrellone(new Ombrellone(tipo,coordinateScelte));
         return true;
     }
 
@@ -231,7 +240,7 @@ public class HandlerSpiaggia {
         for (Coordinate coord: coordinate) {
             System.out.print("Posto "+appoggio+" : \t");
             if(coord == null) System.out.println("Occupato");
-            else System.out.println(" "+coord.getxAxis()+"\t\t "+ coord.getyAxis());
+            else System.out.println(" "+coord.getXAxis()+"\t\t "+ coord.getYAxis());
             appoggio++;
         }
     }
@@ -385,7 +394,7 @@ public class HandlerSpiaggia {
 
     private void aggiornaTipologiaOmbrellone(String tipologia, Ombrellone ombrelloneSelezionato){
         spiaggiaGestita.aggiornaTipologiaOmbrellone(ombrelloneSelezionato, tipologia);
-        this.associatedDBMS.aggiornaTipologiaOmbrellone(ombrelloneSelezionato.getIdOmbrellone(), tipologia);
+        this.associatedDBMS.aggiornaTipologiaOmbrellone(ombrelloneSelezionato.getId(), tipologia);
     }
 
     private boolean confermaOperazione(){
@@ -525,13 +534,13 @@ public class HandlerSpiaggia {
         }
     }
 
-    public Ombrellone getOmbrellone(int idOmbrellone) {
+    public Ombrellone getOmbrellone(long idOmbrellone) {
         for(ArrayList<Ombrellone> currentRow: spiaggiaGestita.getListaOmbrelloni())
             for(Ombrellone ombrelloneCorrente : currentRow)
                 if(ombrelloneCorrente == null)
                     continue;
                 else{
-                    if(ombrelloneCorrente.getIdOmbrellone() == idOmbrellone)
+                    if(ombrelloneCorrente.getId() == idOmbrellone)
                         return ombrelloneCorrente;
                 }
         return null;

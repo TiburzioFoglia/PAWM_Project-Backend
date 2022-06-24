@@ -1,8 +1,6 @@
 package it.unicam.cs.PAWNProjectBackend.service;
 
-import it.unicam.cs.PAWNProjectBackend.model.OrdineBar;
-import it.unicam.cs.PAWNProjectBackend.model.Prenotazione;
-import it.unicam.cs.PAWNProjectBackend.model.ProdottoBar;
+import it.unicam.cs.PAWNProjectBackend.model.*;
 
 import java.util.ArrayList;
 import java.sql.*;
@@ -650,8 +648,8 @@ public class DBMSController { //TODO cancellare e portare le funzionalita per ne
     }
 
     public void rimuoviOmbrellone(Ombrellone ombrellone) {
-        String SQL = "DELETE from ombrellone where (id = " + ombrellone.getIdOmbrellone() + ")";
-        String SQL2 = "UPDATE spiaggia SET idombrellone = NULL WHERE (" + "fila = " + ombrellone.getLocation().getyAxis() + " AND colonna = " + ombrellone.getLocation().getxAxis() + ")";
+        String SQL = "DELETE from ombrellone where (id = " + ombrellone.getId() + ")";
+        String SQL2 = "UPDATE spiaggia SET idombrellone = NULL WHERE (" + "fila = " + ombrellone.getLocation().getYAxis() + " AND colonna = " + ombrellone.getLocation().getXAxis() + ")";
         try {
             Connection conn = DriverManager.getConnection(this.url, this.user, this.pwd);
             Statement stmt = conn.createStatement();
@@ -663,7 +661,7 @@ public class DBMSController { //TODO cancellare e portare le funzionalita per ne
         this.closeConnection();
     }
 
-    public void aggiornaTipologiaOmbrellone(int idOmbrellone, String tipologia) {
+    public void aggiornaTipologiaOmbrellone(long idOmbrellone, String tipologia) {
         try {
             Connection conn = DriverManager.getConnection(this.url, this.user, this.pwd);
             Statement stmt = conn.createStatement();
@@ -1053,7 +1051,7 @@ public class DBMSController { //TODO cancellare e portare le funzionalita per ne
         this.closeConnection();
     }
 
-    public void rimuoviPrenotazioni(ArrayList<Integer> listaPrenotazioniDaRimuovere) {
+    public void rimuoviPrenotazioni(ArrayList<Long> listaPrenotazioniDaRimuovere) {
         String comandoSQL;
         String comandoSQL2;
         for(Integer currentIdPrenotazione : listaPrenotazioniDaRimuovere){

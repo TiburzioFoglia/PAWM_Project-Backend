@@ -1,8 +1,6 @@
 package it.unicam.cs.PAWNProjectBackend.service;
 
-import it.unicam.cs.PAWNProjectBackend.model.Menu;
-import it.unicam.cs.PAWNProjectBackend.model.OrdineBar;
-import it.unicam.cs.PAWNProjectBackend.model.ProdottoBar;
+import it.unicam.cs.PAWNProjectBackend.model.*;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -152,7 +150,7 @@ public class HandlerPrenotazione {
 
     public void cancellaPrenotazione(int idCliente) {
         ArrayList<Prenotazione> listaPrenotazioni;
-        ArrayList<Integer> listaPrenotazioniDaRimuovere = new ArrayList<>();
+        ArrayList<Long> listaPrenotazioniDaRimuovere = new ArrayList<>();
         listaPrenotazioni = associatedDBMS.ottieniListaPrenotazioni();
         double prezzoDaRimborsare = 0;
 
@@ -374,7 +372,7 @@ public class HandlerPrenotazione {
         for (ArrayList<Ombrellone> innerlist : handlerSpiaggiaAssociato.ottieniVistaSpiaggia()) {
             for (Ombrellone i : innerlist) {
                 if(i != null) {
-                    handlerSpiaggiaAssociato.getOmbrellone(i.getIdOmbrellone()).setIsBooked(false);
+                    handlerSpiaggiaAssociato.getOmbrellone(i.getId()).setPrenotato(false);
                     listaTemp.add(i);
                 }
             }
@@ -385,9 +383,9 @@ public class HandlerPrenotazione {
                 if (entry.getKey().equals(dataPrenotazione) && (entry.getValue() == fasciaOrariaPrenotazione || entry.getValue() == 3 || fasciaOrariaPrenotazione ==3)) {
                     for (Ombrellone prenotato : prenotazione.getMappaDateListaOmbrelloni().get(entry.getKey())) {
                         //       handlerSpiaggiaAssociato.getOmbrellone(prenotato.getIdOmbrellone()).setIsBooked(true);
-                        listaTemp.get(listaTemp.indexOf(prenotato)).setIsBooked(true);
+                        listaTemp.get(listaTemp.indexOf(prenotato)).setPrenotato(true);
                     }
-                    if (listaTemp.stream().allMatch(Ombrellone::isBooked)) {
+                    if (listaTemp.stream().allMatch(Ombrellone::isPrenotato)) {
                         //la spiaggia è completamente occupata
                         return listaOmbrPrenotabili;
                     }
@@ -395,7 +393,7 @@ public class HandlerPrenotazione {
             }
         }
         for (Ombrellone ombr : listaTemp) {
-            if(!ombr.isBooked()){
+            if(!ombr.isPrenotato()){
                 listaOmbrPrenotabili.add(ombr);
             }
         }
@@ -404,13 +402,13 @@ public class HandlerPrenotazione {
 
     private void mostraDisposizioneOmbrelloniDisponibiliEPrezzo(ArrayList<Ombrellone> listaPrenotabili) {
         for (Ombrellone ombrellone : listaPrenotabili) {
-            System.out.println("Ombrellone: "+ombrellone.getIdOmbrellone()+", Tipo: "+ombrellone.getNomeTipo()+", Coordinate: "+ombrellone.getLocation().toString()+", Prezzo: "+calcoloPrezzoOmbrellone(ombrellone));
+            System.out.println("Ombrellone: "+ombrellone.getId()+", Tipo: "+ombrellone.getNomeTipo()+", Coordinate: "+ombrellone.getLocation().toString()+", Prezzo: "+calcoloPrezzoOmbrellone(ombrellone));
         }
     }
 
     private Ombrellone getOmbrelloneById(int idOmbrellone, ArrayList<Ombrellone> listaTarget){
         for (Ombrellone ombrellone : listaTarget) {
-            if (idOmbrellone==ombrellone.getIdOmbrellone()){
+            if (idOmbrellone==ombrellone.getId()){
                 return ombrellone;
             }
         }
@@ -444,7 +442,7 @@ public class HandlerPrenotazione {
 
     private String getNomeFasciaOmbrellone(Ombrellone ombrellone){
         ArrayList<ArrayList<String>> griglia = this.handlerListinoAssociato.vistaSpiaggiaFasce(this.handlerSpiaggiaAssociato.ottieniVistaSpiaggia());
-        return griglia.get(ombrellone.getLocation().getyAxis()).get(ombrellone.getLocation().getxAxis());
+        return griglia.get(ombrellone.getLocation().getYAxis()).get(ombrellone.getLocation().getXAxis());
     }
 
     private void recapPrenotazione(Prenotazione prenotazioneInCorso) {
@@ -457,7 +455,7 @@ public class HandlerPrenotazione {
                 if (entry.getKey().equals(entry2.getKey())) {
                     System.out.println(entry.getKey() + " nella fascia oraria: " + entry.getValue() +".");
                     for (Ombrellone ombrellone : entry2.getValue()) {
-                        System.out.println("Ombrellone " + ombrellone.getIdOmbrellone() + " e " + ombrellone.getNumeroLettiniAssociati() + " lettino/i.");
+                        System.out.println("Ombrellone " + ombrellone.getId() + " e " + ombrellone.getNumeroLettiniAssociati() + " lettino/i.");
                     }
                 }
             }
@@ -520,16 +518,6 @@ public class HandlerPrenotazione {
             }
             else System.out.println("Operazioni annullate");
         } else System.out.println("Impossibile procedere con l'ordine, il cliente non ha una prenotazione associata o nessun prodotto bar disponibile");
-    }
-
-    private int getNewIdOrdineBar(){
-        int highestId = -1;
-        ArrayList<OrdineBar>listaOrdiniBar = this.associatedDBMS.ottieniListaOrdiniBar();
-        if(!listaOrdiniBar.isEmpty())
-            for(OrdineBar ordine : listaOrdiniBar)
-                if(ordine.getIdOrdine() > highestId)
-                    highestId = ordine.getIdOrdine();
-        return highestId+1;
     }
 
     private Double applicaScontoCoupon(Double prezzoTotale){

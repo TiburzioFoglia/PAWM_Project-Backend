@@ -1,8 +1,6 @@
 package it.unicam.cs.PAWNProjectBackend.service;
 
-import it.unicam.cs.PAWNProjectBackend.model.Listino;
-import it.unicam.cs.PAWNProjectBackend.model.OrdineBar;
-import it.unicam.cs.PAWNProjectBackend.model.ProdottoBar;
+import it.unicam.cs.PAWNProjectBackend.model.*;
 
 import java.util.*;
 
@@ -296,10 +294,10 @@ public class HandlerListino {
         int y = 0;
         for (ArrayList<String> riga : griglia) {
             for (String posto : riga) {
-                int yInizioFascia = fascia.getCoordinateInizio().getyAxis();
-                int xInizioFascia = fascia.getCoordinateInizio().getxAxis();
-                int yFineFascia = fascia.getCoordinateFine().getyAxis();
-                int xFineFascia = fascia.getCoordinateFine().getxAxis();
+                int yInizioFascia = fascia.getCoordinateInizio().getYAxis();
+                int xInizioFascia = fascia.getCoordinateInizio().getXAxis();
+                int yFineFascia = fascia.getCoordinateFine().getYAxis();
+                int xFineFascia = fascia.getCoordinateFine().getXAxis();
                 if(yInizioFascia == yFineFascia){
                     if(yInizioFascia == y && x >= xInizioFascia && x <= xFineFascia){
                         griglia.get(y).set(x,fascia.getNome());
@@ -523,7 +521,7 @@ public class HandlerListino {
 
     private boolean controlloEsistenzaCoordinate(Coordinate coordinate, ArrayList<ArrayList<Ombrellone>> listaOmbrelloni) {
         try{
-            listaOmbrelloni.get(coordinate.getyAxis()).get(coordinate.getxAxis());
+            listaOmbrelloni.get(coordinate.getYAxis()).get(coordinate.getXAxis());
         }catch (Exception e) {
             System.out.println("Le coordinate inserite non fanno parte della spiaggia, le operazioni verranno annullate ");
             return false;
@@ -559,10 +557,10 @@ public class HandlerListino {
     }
 
     private boolean controlloCoordinate(FasciaDiPrezzo fasciaTemporanea) {
-        int yPrimoTemporanea = fasciaTemporanea.getCoordinateInizio().getyAxis();
-        int xPrimoTemporanea = fasciaTemporanea.getCoordinateInizio().getxAxis();
-        int yUltimoTemporanea = fasciaTemporanea.getCoordinateFine().getyAxis();
-        int xUltimoTemporanea = fasciaTemporanea.getCoordinateFine().getxAxis();
+        int yPrimoTemporanea = fasciaTemporanea.getCoordinateInizio().getYAxis();
+        int xPrimoTemporanea = fasciaTemporanea.getCoordinateInizio().getXAxis();
+        int yUltimoTemporanea = fasciaTemporanea.getCoordinateFine().getYAxis();
+        int xUltimoTemporanea = fasciaTemporanea.getCoordinateFine().getXAxis();
         return yPrimoTemporanea < yUltimoTemporanea || (yPrimoTemporanea == yUltimoTemporanea && xPrimoTemporanea < xUltimoTemporanea);
     }
 

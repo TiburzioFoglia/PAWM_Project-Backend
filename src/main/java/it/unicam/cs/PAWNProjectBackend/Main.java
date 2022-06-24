@@ -1,6 +1,11 @@
 package it.unicam.cs.PAWNProjectBackend;
 
 
+import it.unicam.cs.PAWNProjectBackend.service.DBMSController;
+import it.unicam.cs.PAWNProjectBackend.service.HandlerAttrezzatura;
+import it.unicam.cs.PAWNProjectBackend.service.HandlerListino;
+import it.unicam.cs.PAWNProjectBackend.service.HandlerSpiaggia;
+
 import java.util.Scanner;
 
 public class Main {

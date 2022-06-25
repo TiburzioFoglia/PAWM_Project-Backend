@@ -34,7 +34,7 @@ public class HandlerListino {
     }
 
     public void aggiungiProdottoBar() {
-        this.listinoGestito.aggiornaMappaProdotti(this.associatedDBMS.ottieniMappaProdottiBar());
+        //this.listinoGestito.aggiornaMappaProdotti(this.associatedDBMS.ottieniMappaProdottiBar());
         boolean flag;
         mostraListinoBar();
         do {

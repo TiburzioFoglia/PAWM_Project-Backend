@@ -6,10 +6,8 @@ import org.springframework.data.neo4j.core.schema.GeneratedValue;
 import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.*;
+
 
 @Data
 @NoArgsConstructor
@@ -28,7 +26,6 @@ public class Attivita {
     private String animatore;
     private int oreDurata;
 
-    //TODO implementare questa cosa anche per i metodi
     @Relationship(type = "QUANTITA_ATTREZZATURA",direction = Relationship.Direction.OUTGOING)
     private Collection<AttivitaAttrezzaturaRel> quantitaAttrezzatura;
 
@@ -57,6 +54,8 @@ public class Attivita {
         this.numeroIscritti = 0;
     }
 
+    //TODO in teoria questo dovrebbe essere fatto dal frontend
+    /*
     public void printDettagliAttivita(){
         DateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
         System.out.println(nome + ":\t" +
@@ -77,9 +76,10 @@ public class Attivita {
             System.out.println("Nome: " + attrezzatura.getNome() + "\t|\t" + this.attrezzatureAssociate.get(attrezzatura) + "pz");
         }
     }
+    */
 
     public boolean isAttrezzaturaAssociata(String nomeAttrezzatura) {
-        for(Attrezzatura attrezzatura : this.attrezzatureAssociate.keySet())
+        for(Attrezzatura attrezzatura : this.quantitaAttrezzatura.stream().map(AttivitaAttrezzaturaRel::getAttrezzaturaNode).toList())
             if(attrezzatura.getNome().equals(nomeAttrezzatura))
                 return true;
         return false;

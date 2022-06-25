@@ -9,21 +9,21 @@ import org.springframework.data.neo4j.core.schema.TargetNode;
 @RelationshipProperties
 @Data
 @NoArgsConstructor
-public class AttivitaAttrezzaturaRel {
+public class ListinoFasciaDiPrezzoRel {
     @RelationshipId
     private Long id;
 
     @TargetNode
-    private Attrezzatura attrezzaturaNode;
+    private FasciaDiPrezzo fasciaDiPrezzo;
 
-    private Integer quantita;
+    private Double prezzo;
 
-    public AttivitaAttrezzaturaRel(Attrezzatura attrezzaturaNode) {
-        this.attrezzaturaNode = attrezzaturaNode;
+    public ListinoFasciaDiPrezzoRel(FasciaDiPrezzo fasciaDiPrezzo) {
+        this.fasciaDiPrezzo = fasciaDiPrezzo;
     }
 
-    public AttivitaAttrezzaturaRel(Attrezzatura attrezzaturaNode, Integer quantita) {
-        this.attrezzaturaNode = attrezzaturaNode;
-        this.quantita = quantita;
+    public ListinoFasciaDiPrezzoRel(FasciaDiPrezzo fasciaDiPrezzo, Double prezzo) {
+        this.fasciaDiPrezzo = fasciaDiPrezzo;
+        this.prezzo = prezzo;
     }
 }

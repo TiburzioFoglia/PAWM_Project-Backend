@@ -243,7 +243,7 @@ public class HandlerAttivita {
     private void modificaAttrezzaturaAttivita(Attivita attivitaDaModificare) {
         boolean flag;
         do{
-            attivitaDaModificare.printAttrezzatureAssociate();
+            //attivitaDaModificare.printAttrezzatureAssociate();
             System.out.println("Inserire il nome dell'attrezzatura");
             String nomeAttrezzatura = sc.nextLine();
             if(attivitaDaModificare.isAttrezzaturaAssociata(nomeAttrezzatura)){

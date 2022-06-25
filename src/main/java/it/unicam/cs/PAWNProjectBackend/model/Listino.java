@@ -5,10 +5,11 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.neo4j.core.schema.GeneratedValue;
 import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.Node;
+import org.springframework.data.neo4j.core.schema.Relationship;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.Map;
 
 @Data
 @NoArgsConstructor
@@ -19,166 +20,143 @@ public class Listino {
     @GeneratedValue
     private Long id;
 
-    //TODO controllare e far diventare collegamento (con oggetto relazione)
-    private HashMap<TipologiaOmbrellone, Double> prezziTipologia;
-    //TODO controllare e far diventare collegamento (con oggetto relazione)
-    private HashMap<ProdottoBar, Double> prezziBar;
-    //TODO controllare e far diventare collegamento (con oggetto relazione)
-    private HashMap<FasciaDiPrezzo, Double> prezziFascia;
+    @Relationship(type = "QUANTITA_ATTREZZATURA",direction = Relationship.Direction.OUTGOING)
+    private Collection<ListinoTipologiaOmbrelloneRel> prezziTipologia;
+
+    @Relationship(type = "QUANTITA_ATTREZZATURA",direction = Relationship.Direction.OUTGOING)
+    private Collection<ListinoProdottoBarRel> prezziBar;
+
+    @Relationship(type = "QUANTITA_ATTREZZATURA",direction = Relationship.Direction.OUTGOING)
+    private Collection<ListinoFasciaDiPrezzoRel> prezziFascia;
+
     private double prezzoBaseOmbrellone;
     private double prezzoBaseLettino;
 
     public double calcolaPrezzoPrenotazione(int idTipologia, String nomeFascia) {
-        FasciaDiPrezzo fascia = null;
-        for(FasciaDiPrezzo fasciaCorrente : this.prezziFascia.keySet())
-            if(fasciaCorrente.getNome().equals(nomeFascia))
-                fascia = fasciaCorrente;
-        for(TipologiaOmbrellone tipologia : this.prezziTipologia.keySet())
-            if(tipologia.getId() == idTipologia)
-                return prezzoBaseOmbrellone * prezziTipologia.get(tipologia) * prezziFascia.get(fascia) ;
+        Double prezzoFascia = 0.0;
+        for(ListinoFasciaDiPrezzoRel listinoFasciaDiPrezzoRel : this.prezziFascia.stream().toList()){
+            if(listinoFasciaDiPrezzoRel.getFasciaDiPrezzo().getNome().equals(nomeFascia))
+                prezzoFascia = listinoFasciaDiPrezzoRel.getPrezzo();
+        }
+        for(ListinoTipologiaOmbrelloneRel listinoTipologiaOmbrelloneRel : this.prezziTipologia.stream().toList()){
+            if(listinoTipologiaOmbrelloneRel.getTipologiaOmbrellone().getId() == idTipologia)
+                return prezzoBaseOmbrellone * listinoTipologiaOmbrelloneRel.getPrezzo() * prezzoFascia;
+        }
+
         System.out.println("La tipologia su cui calcolare il prezzo della prenotazione non esiste");
         return -1;
     }
 
 
     public boolean controlloProdottoEsistente(ProdottoBar prodottoBar) {
-        return this.prezziBar.containsKey(prodottoBar);
+        return this.prezziBar.stream().map(ListinoProdottoBarRel::getProdottoBar).toList().contains(prodottoBar);
     }
 
     public void aggiungiAllaListaProdotti(ProdottoBar nuovoProdottoBar, Double prezzoProdotto) {
-        this.prezziBar.put(nuovoProdottoBar, prezzoProdotto);
+        this.prezziBar.add(new ListinoProdottoBarRel(nuovoProdottoBar,prezzoProdotto));
     }
 
-    public Double eliminaProdotto(ProdottoBar prodottoScelto) {
-        return this.getPrezziBar().remove(prodottoScelto);
+    public Boolean eliminaProdotto(ProdottoBar prodottoScelto) {
+        ListinoProdottoBarRel listinoProdottoBarRel;
+        listinoProdottoBarRel = this.prezziBar.stream().filter(a -> a.getProdottoBar().equals(prodottoScelto))
+                .findFirst().orElseThrow();
+        return this.prezziBar.remove(listinoProdottoBarRel);
     }
 
-    public void aggiornaTipologie(HashMap<TipologiaOmbrellone, Double> tipologie) {
+    public void aggiornaTipologie(Collection<ListinoTipologiaOmbrelloneRel> tipologie) {
         this.prezziTipologia = tipologie;
     }
 
-    public void aggiornaMappaFasce(HashMap<FasciaDiPrezzo, Double> fascieDiPrezzo) {
+    public void aggiornaMappaFasce(Collection<ListinoFasciaDiPrezzoRel> fascieDiPrezzo) {
         this.prezziFascia = fascieDiPrezzo;
     }
 
     public void aggiungiTipologia(TipologiaOmbrellone tipologiaOmbrellone) {
-        this.prezziTipologia.put(tipologiaOmbrellone,null);
+        this.prezziTipologia.add(new ListinoTipologiaOmbrelloneRel(tipologiaOmbrellone,null));
     }
 
     public void aggiornaPrezzoProdotto(ProdottoBar prodottoScelto, double nuovoPrezzo) {
-        this.getPrezziBar().put(prodottoScelto,nuovoPrezzo);
+        this.prezziBar.stream().filter(a -> a.getProdottoBar().equals(prodottoScelto))
+                .findFirst().orElseThrow().setPrezzo(nuovoPrezzo);
     }
 
     public void aggiornaDescrizioneProdotto(ProdottoBar prodottoScelto, String descrizione) {
-        for(ProdottoBar prodotto: this.getPrezziBar().keySet()){
-            if(prodotto.equals(prodottoScelto)) prodotto.setDescrizione(descrizione);
-        }
+        this.prezziBar.stream().filter(a -> a.getProdottoBar().equals(prodottoScelto))
+                .findFirst().orElseThrow().getProdottoBar().setDescrizione(descrizione);
     }
 
     public boolean aggiornaNomeProdotto(ProdottoBar prodottoScelto, String nuovoNome) {
-        Double temp = this.prezziBar.get(prodottoScelto);
-        for(ProdottoBar prodotto: this.getPrezziBar().keySet()){
-            if(prodotto.getNomeProdotto().equals(nuovoNome)) return false;
+        if(this.prezziBar.stream().map(a -> a.getProdottoBar().getNomeProdotto().equals(nuovoNome)).toList().contains(true)){
+            return false;
         }
-        this.prezziBar.remove(prodottoScelto);
-        prodottoScelto.setNomeProdotto(nuovoNome);
-        this.prezziBar.put(prodottoScelto,temp);
+        this.prezziBar.stream().filter(a -> a.getProdottoBar().equals(prodottoScelto))
+                .findFirst().orElseThrow().getProdottoBar().setNomeProdotto(nuovoNome);
         return true;
     }
 
     public HashMap<TipologiaOmbrellone, Double> getPrezziTipologia() {
-        return prezziTipologia;
+        HashMap<TipologiaOmbrellone, Double> prezziTipologiaMappa = new HashMap<>();
+        for(ListinoTipologiaOmbrelloneRel listinoTipologiaOmbrelloneRel : this.prezziTipologia.stream().toList()){
+            prezziTipologiaMappa.put(listinoTipologiaOmbrelloneRel.getTipologiaOmbrellone(),listinoTipologiaOmbrelloneRel.getPrezzo());
+        }
+        return prezziTipologiaMappa;
     }
 
     public void setNuovoPrezzoTipologia(String nomeTipologia, double nuovoPrezzo){
-        for(TipologiaOmbrellone tipologia : this.getPrezziTipologia().keySet()){
-            if(tipologia.getNome().equals(nomeTipologia))
-                this.getPrezziTipologia().put(tipologia, nuovoPrezzo);
-        }
-    }
-
-    public void setPrezziTipologia(HashMap<TipologiaOmbrellone, Double> prezziTipologia) {
-        this.prezziTipologia = prezziTipologia;
+        this.prezziTipologia.stream().filter(a -> a.getTipologiaOmbrellone().getNome().equals(nomeTipologia))
+                .findFirst().orElseThrow().setPrezzo(nuovoPrezzo);
     }
 
     public HashMap<ProdottoBar, Double> getPrezziBar() {
-        return prezziBar;
-    }
-
-    public void setPrezziBar(HashMap<ProdottoBar, Double> prezziBar) {
-        this.prezziBar = prezziBar;
+        HashMap<ProdottoBar, Double> prezziBarMappa = new HashMap<>();
+        for(ListinoProdottoBarRel listinoProdottoBarRel : this.prezziBar.stream().toList()){
+            prezziBarMappa.put(listinoProdottoBarRel.getProdottoBar(),listinoProdottoBarRel.getPrezzo());
+        }
+        return prezziBarMappa;
     }
 
     public HashMap<FasciaDiPrezzo, Double> getPrezziFascia() {
-        return prezziFascia;
-    }
-
-    public void setPrezziFascia(HashMap<FasciaDiPrezzo, Double> prezziFascia) {
-        this.prezziFascia = prezziFascia;
-    }
-
-    public double getPrezzoBaseOmbrellone() {
-        return prezzoBaseOmbrellone;
-    }
-
-    public void setPrezzoBaseOmbrellone(double prezzoBaseOmbrellone) {
-        this.prezzoBaseOmbrellone = prezzoBaseOmbrellone;
+        HashMap<FasciaDiPrezzo, Double> prezziFasciaMappa = new HashMap<>();
+        for(ListinoFasciaDiPrezzoRel listinoFasciaDiPrezzoRel : this.prezziFascia.stream().toList()){
+            prezziFasciaMappa.put(listinoFasciaDiPrezzoRel.getFasciaDiPrezzo(),listinoFasciaDiPrezzoRel.getPrezzo());
+        }
+        return prezziFasciaMappa;
     }
 
     public void eliminaFasciaDiPrezzo(FasciaDiPrezzo fasciaDaModificare) {
-        this.prezziFascia.remove(fasciaDaModificare);
+        ListinoFasciaDiPrezzoRel listinoFasciaDiPrezzoRel;
+        listinoFasciaDiPrezzoRel = this.prezziFascia.stream().filter(a -> a.getFasciaDiPrezzo().equals(fasciaDaModificare))
+                .findFirst().orElseThrow();
+        this.prezziFascia.remove(listinoFasciaDiPrezzoRel);
     }
 
     public void modificaPrezzoFascia(FasciaDiPrezzo fasciaDaModificare, double nuovoPrezzo) {
-        this.prezziFascia.replace(fasciaDaModificare,nuovoPrezzo);
-    }
-
-    public void mostraFasceEPrezzi() {
-        for (Map.Entry<FasciaDiPrezzo, Double> entry : this.prezziFascia.entrySet()) {
-            System.out.println(("Fascia " + entry.getKey().getNome() + " - costo: " + entry.getValue() + "."));
-        }
+        this.prezziFascia.stream().filter(a -> a.getFasciaDiPrezzo().equals(fasciaDaModificare))
+                .findFirst().orElseThrow().setPrezzo(nuovoPrezzo);
     }
 
     public void modificaLocazioniFascia(FasciaDiPrezzo fasciaDaModificare, FasciaDiPrezzo fasciaTemporanea) {
-        double app = this.prezziFascia.get(fasciaDaModificare);
-        this.prezziFascia.remove(fasciaDaModificare);
-        fasciaDaModificare.setCoordinateInizio(fasciaTemporanea.getCoordinateInizio());
-        fasciaDaModificare.setCoordinateFine(fasciaTemporanea.getCoordinateFine());
-        this.prezziFascia.put(fasciaDaModificare,app);
-    }
-
-    public void outputListaTipologie(){
-        if(this.prezziTipologia.isEmpty()){
-            System.out.println("Al momento non ci sono tipologie salvate");
-        }
-        else{
-            System.out.println("Tipi: ");
-            for (TipologiaOmbrellone tipologia: this.prezziTipologia.keySet()) {
-                System.out.println(tipologia+" Moltipilicatore: "+ this.prezziTipologia.get(tipologia));
-            }
-        }
+        FasciaDiPrezzo fascia = this.prezziFascia.stream().filter(a -> a.getFasciaDiPrezzo().equals(fasciaDaModificare))
+                .findFirst().orElseThrow().getFasciaDiPrezzo();
+        fascia.setCoordinateInizio(fasciaTemporanea.getCoordinateInizio());
+        fascia.setCoordinateFine(fasciaTemporanea.getCoordinateFine());
     }
 
     public void addPrezziFascia(FasciaDiPrezzo fasciaDaAggiungere, double prezzoDaAggiungere) {
-        this.prezziFascia.put(fasciaDaAggiungere, prezzoDaAggiungere);
+        this.prezziFascia.stream().filter(a -> a.getFasciaDiPrezzo().equals(fasciaDaAggiungere))
+                .findFirst().orElseThrow().setPrezzo(prezzoDaAggiungere);
     }
 
     public boolean isNomeDisponibile(String nomeStringa) {
-        for(FasciaDiPrezzo fascia : this.prezziFascia.keySet()){
-            if(fascia.getNome().equals(nomeStringa)) {
-                System.out.println("Il nome inserito non è disponibile");
-                return false;
-            }
+        if(this.prezziFascia.stream().map(a -> a.getFasciaDiPrezzo().getNome()).toList().contains(nomeStringa)){
+            System.out.println("Il nome inserito non è disponibile");
+            return false;
         }
         return true;
     }
 
     public ArrayList<TipologiaOmbrellone> getTipologie() {
-        return new ArrayList<>(this.prezziTipologia.keySet());
-    }
-
-    public void aggiornaMappaProdotti(HashMap<ProdottoBar, Double> ottieniMappaProdottiBar) {
-        this.prezziBar = ottieniMappaProdottiBar;
+        return new ArrayList<>(this.prezziTipologia.stream().map(ListinoTipologiaOmbrelloneRel::getTipologiaOmbrellone).toList());
     }
 
 }

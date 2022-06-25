@@ -4,6 +4,7 @@ import it.unicam.cs.PAWNProjectBackend.model.*;
 
 import java.util.ArrayList;
 import java.sql.*;
+import java.util.Collection;
 import java.util.HashMap;
 
 public class DBMSController { //TODO cancellare e portare le funzionalita per neo4j e springboot
@@ -330,9 +331,9 @@ public class DBMSController { //TODO cancellare e portare le funzionalita per ne
     }
 
     //testato
-    public HashMap<TipologiaOmbrellone, Double> ottieniTipologie() {
+    public Collection<ListinoTipologiaOmbrelloneRel> ottieniTipologie() {
         String comandoSQL = "select * from tipologiaOmbrellone";
-        HashMap<TipologiaOmbrellone, Double> prezziTipologie = new HashMap<>();
+        Collection<ListinoTipologiaOmbrelloneRel> prezziTipologie = new HashMap<>();
 
         try {
             Connection conn = DriverManager.getConnection(this.url, this.user, this.pwd);
@@ -484,7 +485,7 @@ public class DBMSController { //TODO cancellare e portare le funzionalita per ne
 
     //testato
     public boolean aggiornaMappaTipologie(HashMap<TipologiaOmbrellone, Double> prezziTipologia) {
-        HashMap<TipologiaOmbrellone,Double> tipologiePreModifiche = this.ottieniTipologie();
+        Collection<ListinoTipologiaOmbrelloneRel> tipologiePreModifiche = this.ottieniTipologie();
         boolean controlloEsistenza;
         for(TipologiaOmbrellone tipologia : prezziTipologia.keySet()){
             controlloEsistenza=false;
@@ -557,7 +558,7 @@ public class DBMSController { //TODO cancellare e portare le funzionalita per ne
         return true;
     }
 
-    private void eliminazioneFasceDaNonPresenti(HashMap<FasciaDiPrezzo, Double> prezziFasciaPreModifica, HashMap<FasciaDiPrezzo, Double> prezziFascia) {
+    private void eliminazioneFasceDaNonPresenti(Collection<ListinoFasciaDiPrezzoRel> prezziFasciaPreModifica, HashMap<FasciaDiPrezzo, Double> prezziFascia) {
         int app;
         for(FasciaDiPrezzo fasciaPreModifica : prezziFasciaPreModifica.keySet()){
             app=0;
@@ -599,9 +600,9 @@ public class DBMSController { //TODO cancellare e portare le funzionalita per ne
     }
 
     //testato
-    public HashMap<FasciaDiPrezzo, Double> ottieniMappaFasce() {
+    public Collection<ListinoFasciaDiPrezzoRel> ottieniMappaFasce() {
         String SQL = "select * from fasciadiprezzo";
-        HashMap<FasciaDiPrezzo, Double> prezziFasce = new HashMap<>();
+        Collection<ListinoFasciaDiPrezzoRel> prezziFasce = new HashMap<>();
         try {
             Connection conn = DriverManager.getConnection(this.url, this.user, this.pwd);
             Statement stmt = conn.createStatement();
@@ -619,7 +620,7 @@ public class DBMSController { //TODO cancellare e portare le funzionalita per ne
     //testare il pezzo dell'aggiunta
     public boolean aggiornaMappaFasce(HashMap<FasciaDiPrezzo, Double> prezziFascia) {
 
-        HashMap<FasciaDiPrezzo, Double> fascePreModifiche = this.ottieniMappaFasce();
+        Collection<ListinoFasciaDiPrezzoRel> fascePreModifiche = this.ottieniMappaFasce();
 
         boolean controlloEsistenza;
 

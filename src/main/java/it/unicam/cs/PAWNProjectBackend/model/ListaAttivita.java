@@ -19,70 +19,50 @@ public class ListaAttivita {
     @GeneratedValue
     private Long id;
 
-    //TODO controllare
     @Relationship(type = "CONTIENE_ATTIVITA",direction = Relationship.Direction.OUTGOING)
-    private ArrayList<Attivita> lista;
+    private ArrayList<Attivita> listaAttivita;
 
-    public void aggiornaListaAttivita(ArrayList<Attivita> listaAggiornata){
-        this.lista = listaAggiornata;
-    }
-
-    public ArrayList<Attivita> ottieniListaAttivitaAggiornata() {
-        return  this.lista;
-    }
-
-    public void printListaAttivita(){
-        if(this.lista.isEmpty())
-            System.out.println("La lista delle attività è vuota");
-        else{
-            for(Attivita attivita : lista){
-                attivita.printDettagliAttivita();
-            }
-        }
-    }
-
-    public boolean isNuovaAttivita(Attivita attivita){  //controlloInserimento
-        for(Attivita attivitaEsistenti : this.lista){
+    public boolean isNuovaAttivita(Attivita attivita){
+        for(Attivita attivitaEsistenti : this.listaAttivita){
             if(attivitaEsistenti.equals(attivita)) return false;
         }
         return true;
     }
 
     public void aggiungiAttivita(Attivita attivita){
-        this.lista.add(attivita);
+        this.listaAttivita.add(attivita);
     }
 
     public boolean controlloDisponibilitaNome(String nome, Date data, int fasciaOraria) {
-        for(Attivita attivita : this.lista)
-            if(attivita.getNome().equals(nome) && attivita.getData().equals(data) && attivita.getFasciaOraria() == fasciaOraria)
-                return false;
-        return true;
+        return !this.listaAttivita.stream().filter(a -> a.getData().equals(data) && a.getFasciaOraria() == fasciaOraria)
+                .map(Attivita::getNome).toList().contains(nome);
     }
 
     public void aggiornaNomeAttivita(Attivita attivitaDaModificare, String nome) {
-        this.lista.get(this.lista.indexOf(attivitaDaModificare)).setNome(nome);
+        this.listaAttivita.get(this.listaAttivita.indexOf(attivitaDaModificare)).setNome(nome);
     }
 
     public void aggiornaDescrizioneAttivita(Attivita attivitaDaModificare, String descrizione) {
-        this.lista.get(this.lista.indexOf(attivitaDaModificare)).setDescrizione(descrizione);
+        this.listaAttivita.get(this.listaAttivita.indexOf(attivitaDaModificare)).setDescrizione(descrizione);
 
     }
 
     public void aggiornaDataEOraAttivita(Attivita attivitaDaModificare, Date nuovaData, int fasciaOraria) {
-        this.lista.get(this.lista.indexOf(attivitaDaModificare)).setData(nuovaData);
-        this.lista.get(this.lista.indexOf(attivitaDaModificare)).setFasciaOraria(fasciaOraria);
+        this.listaAttivita.get(this.listaAttivita.indexOf(attivitaDaModificare)).setData(nuovaData);
+        this.listaAttivita.get(this.listaAttivita.indexOf(attivitaDaModificare)).setFasciaOraria(fasciaOraria);
     }
 
     public void aggiornaNumeroMassimoPostiAttivita(Attivita attivitaDaModificare, int nuovoMaxPosti) {
-        this.lista.get(this.lista.indexOf(attivitaDaModificare)).setMaxPartecipanti(nuovoMaxPosti);
+        this.listaAttivita.get(this.listaAttivita.indexOf(attivitaDaModificare)).setMaxPartecipanti(nuovoMaxPosti);
 
     }
 
+    //TODO capire cosa ci fa questo qui
     public int ottieniNumeroIscrittiAttivita(Attivita attivitaDaModificare) {
         return attivitaDaModificare.getNumeroIscritti();
     }
 
     public void rimuoviAttivita(Attivita attivitaDaModificare) {
-        this.lista.remove(attivitaDaModificare);
+        this.listaAttivita.remove(attivitaDaModificare);
     }
 }

@@ -26,8 +26,8 @@ public class Attivita {
     private String animatore;
     private int oreDurata;
 
-    @Relationship(type = "QUANTITA_ATTREZZATURA",direction = Relationship.Direction.OUTGOING)
-    private Collection<AttivitaAttrezzaturaRel> quantitaAttrezzatura;
+    @Relationship(type = "QUANTITA_ATTREZZATURA_ASSOCIATA",direction = Relationship.Direction.OUTGOING)
+    private Collection<AttivitaAttrezzaturaRel> quantitaAttrezzatureAssociate;
 
     @Override
     public boolean equals(Object o) {
@@ -43,7 +43,7 @@ public class Attivita {
     }
 
     public Attivita(String nome, String descrizione, Date data, int maxPartecipanti, String animatore, int oreDurata, int fasciaOraria){
-        this.quantitaAttrezzatura = new ArrayList<>();
+        this.quantitaAttrezzatureAssociate = new ArrayList<>();
         this.nome = nome;
         this.descrizione = descrizione;
         this.data = data;
@@ -54,32 +54,8 @@ public class Attivita {
         this.numeroIscritti = 0;
     }
 
-    //TODO in teoria questo dovrebbe essere fatto dal frontend
-    /*
-    public void printDettagliAttivita(){
-        DateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
-        System.out.println(nome + ":\t" +
-                formatter.format(data) + '\n' +
-                descrizione + '\n' + "Numero massimo di partecipanti: " +
-                maxPartecipanti + '\n' + "Numero posti disponibili: " +
-                (maxPartecipanti - numeroIscritti) + '\n' +
-                "Animatore: " + animatore + '\n' +
-                "Durata (ore): " + oreDurata
-        );
-        printAttrezzatureAssociate();
-        System.out.println();
-    }
-
-    public void printAttrezzatureAssociate(){
-        System.out.println("Attrezzature associate:");
-        for(Attrezzatura attrezzatura : this.attrezzatureAssociate.keySet()){
-            System.out.println("Nome: " + attrezzatura.getNome() + "\t|\t" + this.attrezzatureAssociate.get(attrezzatura) + "pz");
-        }
-    }
-    */
-
     public boolean isAttrezzaturaAssociata(String nomeAttrezzatura) {
-        for(Attrezzatura attrezzatura : this.quantitaAttrezzatura.stream().map(AttivitaAttrezzaturaRel::getAttrezzaturaNode).toList())
+        for(Attrezzatura attrezzatura : this.quantitaAttrezzatureAssociate.stream().map(AttivitaAttrezzaturaRel::getAttrezzaturaNode).toList())
             if(attrezzatura.getNome().equals(nomeAttrezzatura))
                 return true;
         return false;

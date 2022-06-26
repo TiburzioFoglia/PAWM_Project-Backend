@@ -43,9 +43,4 @@ public class FasciaDiPrezzo {
         this.coordinateInizio = coordinateInizio;
         this.coordinateFine = coordinateFine;
     }
-
-    @Override
-    public String toString() {
-        return "{"+ nome + '\'' + ", Inizio: " + coordinateInizio + ", Fine: " + coordinateFine + '}';
-    }
 }

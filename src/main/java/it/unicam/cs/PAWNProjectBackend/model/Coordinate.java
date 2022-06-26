@@ -21,9 +21,4 @@ public class Coordinate {
         this.xAxis = x;
         this.yAxis = y;
     }
-
-    @Override
-    public String toString() {
-        return "[" + xAxis + "," + yAxis + ']';
-    }
 }

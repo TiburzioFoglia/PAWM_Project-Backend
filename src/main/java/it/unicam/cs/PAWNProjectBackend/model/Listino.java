@@ -20,13 +20,13 @@ public class Listino {
     @GeneratedValue
     private Long id;
 
-    @Relationship(type = "QUANTITA_ATTREZZATURA",direction = Relationship.Direction.OUTGOING)
+    @Relationship(type = "PREZZO_TIPOLOGIA",direction = Relationship.Direction.OUTGOING)
     private Collection<ListinoTipologiaOmbrelloneRel> prezziTipologia;
 
-    @Relationship(type = "QUANTITA_ATTREZZATURA",direction = Relationship.Direction.OUTGOING)
+    @Relationship(type = "PREZZO_PRODOTTOBAR",direction = Relationship.Direction.OUTGOING)
     private Collection<ListinoProdottoBarRel> prezziBar;
 
-    @Relationship(type = "QUANTITA_ATTREZZATURA",direction = Relationship.Direction.OUTGOING)
+    @Relationship(type = "PREZZO_FASCIA",direction = Relationship.Direction.OUTGOING)
     private Collection<ListinoFasciaDiPrezzoRel> prezziFascia;
 
     private double prezzoBaseOmbrellone;

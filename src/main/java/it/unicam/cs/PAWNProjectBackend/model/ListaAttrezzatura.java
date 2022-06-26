@@ -5,11 +5,9 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.neo4j.core.schema.GeneratedValue;
 import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.Node;
+import org.springframework.data.neo4j.core.schema.Relationship;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 @Data
 @NoArgsConstructor
@@ -20,70 +18,50 @@ public class ListaAttrezzatura {
     @GeneratedValue
     private Long id;
 
-    //TODO controllare e far diventare collegamento (con oggetto relazione)
-    private HashMap<Attrezzatura,Integer> mappaAttrezzature;
-
-    public ArrayList<Attrezzatura> ottieniListaAttrezzaturaAggiornata() {
-        return new ArrayList<>(this.mappaAttrezzature.keySet());
-    }
+    @Relationship(type = "QUANTITA_ATTREZZATURA_TOTALE",direction = Relationship.Direction.OUTGOING)
+    private Collection<ListaAttrezzatureAttrezzaturaRel> quantitaAttrezzatureTotali;
 
     public HashMap<Attrezzatura,Integer> getMappaAttrezzatura() {
-        return this.mappaAttrezzature;
+        HashMap<Attrezzatura, Integer> quantitaAttrezzatura = new HashMap<>();
+
+        for(ListaAttrezzatureAttrezzaturaRel listaAttrezzatureAttrezzaturaRel : this.quantitaAttrezzatureTotali.stream().toList()){
+            quantitaAttrezzatura.put(listaAttrezzatureAttrezzaturaRel.getAttrezzatura(),listaAttrezzatureAttrezzaturaRel.getQuantita());
+        }
+        return quantitaAttrezzatura;
     }
 
     public boolean riservaAttrezzatura(String nomeAttrezzatura, int numeroAttrezzatureDesiderato) {
-        for(Attrezzatura attrezzatura : this.mappaAttrezzature.keySet())
-            if(Objects.equals(attrezzatura.getNome().toLowerCase(), nomeAttrezzatura.toLowerCase())) {
-                this.mappaAttrezzature.put(attrezzatura, this.mappaAttrezzature.get(attrezzatura) - numeroAttrezzatureDesiderato);
+        for(ListaAttrezzatureAttrezzaturaRel listaAttrezzatureAttrezzaturaRel : this.quantitaAttrezzatureTotali.stream().toList())
+            if(Objects.equals(listaAttrezzatureAttrezzaturaRel.getAttrezzatura().getNome(), nomeAttrezzatura)) {
+                listaAttrezzatureAttrezzaturaRel.setQuantita(listaAttrezzatureAttrezzaturaRel.getQuantita()-numeroAttrezzatureDesiderato);
                 return true;
             }
         return false;
     }
 
-    public void aggiornaMappaAttrezzatura(HashMap<Attrezzatura, Integer> mappaAggiornata) {
-        mappaAttrezzature = mappaAggiornata;
-    }
-
-    public void printMappaAttrezzature() {
-        if(!this.mappaAttrezzature.isEmpty()) {
-            mappaAttrezzature.entrySet().forEach(entry -> {
-                System.out.println("Attrezzatura: " + entry.getKey().getNome() + " | Disponibilità: " + entry.getValue());
-            });
-        } else System.out.println("Al momento non ci sono attrezzature");
-    }
-
     public boolean controlloAttrezzaturaEsistente(String nomeAttrezzatura) {
-        for (Attrezzatura attrezzatura : this.mappaAttrezzature.keySet()) {
-            if (Objects.equals(attrezzatura.getNome().toLowerCase(), nomeAttrezzatura.toLowerCase())) {
-                System.out.println("L'attrezzatura è presente nella lista.");
+        for (ListaAttrezzatureAttrezzaturaRel listaAttrezzatureAttrezzaturaRel : this.quantitaAttrezzatureTotali.stream().toList()) {
+            if (Objects.equals(listaAttrezzatureAttrezzaturaRel.getAttrezzatura().getNome(), nomeAttrezzatura)) {
                 return true;
             }
         }
-        System.out.println("L'attrezzatura non è presente nella lista.");
         return false;
     }
 
     public void addAttrezzatura(Attrezzatura nuovaAttrezzatura, int quantitaAttrezzatura) {
-        this.mappaAttrezzature.put(nuovaAttrezzatura, quantitaAttrezzatura);
+        this.quantitaAttrezzatureTotali.add(new ListaAttrezzatureAttrezzaturaRel(nuovaAttrezzatura,quantitaAttrezzatura));
     }
 
     public boolean controlloDisponibilitaAttrezzatura(String nomeAttrezzatura, int numeroDaRimuovere) {
-        for (Map.Entry<Attrezzatura, Integer> entry : mappaAttrezzature.entrySet()) {
-            if (Objects.equals(entry.getKey().getNome().toLowerCase(), nomeAttrezzatura.toLowerCase())) {
-                if ((entry.getValue() - numeroDaRimuovere) < 0) {
-                    return false;
-                }
-            }
-        }
-        return true;
+        ListaAttrezzatureAttrezzaturaRel listaAttrezzatureAttrezzaturaRel = this.quantitaAttrezzatureTotali.stream().
+                filter(a -> a.getAttrezzatura().getNome().equals(nomeAttrezzatura)).findFirst().orElseThrow();
+        return (listaAttrezzatureAttrezzaturaRel.getQuantita() - numeroDaRimuovere) >= 0;
     }
 
-    public void aggiungiQuantitaAttrezzatura(String attrezzatura, int quantitaAttrezzatura) {
-        for (Map.Entry<Attrezzatura, Integer> entry : mappaAttrezzature.entrySet()) {
-            if (Objects.equals(entry.getKey().getNome().toLowerCase(), attrezzatura.toLowerCase())) {
-                this.mappaAttrezzature.replace(entry.getKey(), (entry.getValue() + quantitaAttrezzatura));
-            }
-        }
+    public void aggiungiQuantitaAttrezzatura(String nomeAttrezzatura, int quantitaAttrezzatura) {
+        ListaAttrezzatureAttrezzaturaRel listaAttrezzatureAttrezzaturaRel = this.quantitaAttrezzatureTotali.stream().
+                filter(a -> a.getAttrezzatura().getNome().equals(nomeAttrezzatura)).findFirst().orElseThrow();
+        listaAttrezzatureAttrezzaturaRel.setQuantita(listaAttrezzatureAttrezzaturaRel.getQuantita() + quantitaAttrezzatura);
     }
 
     public void rimuoviQuantitaAttrezzatura(String attrezzatura, int quantitaAttrezzatura) {

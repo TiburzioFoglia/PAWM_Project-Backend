@@ -22,11 +22,22 @@ public class Ombrellone {
     @Relationship(type = "HAS_COORDINATES",direction = Relationship.Direction.OUTGOING)
     private Coordinate location;
 
+    public Ombrellone(Coordinate location) {
+        this.location = location;
+        this.nomeTipo = null;
+    }
+
     public Ombrellone(String nomeTipo, Coordinate location){
         this.location = location;
         this.nomeTipo = nomeTipo;
         this.numeroLettiniAssociati = 0;
         this.prenotato = false;
+    }
+
+    public Ombrellone(String nomeTipo, Coordinate location , int numeroLettiniAssociati) {
+        this.nomeTipo = nomeTipo;
+        this.numeroLettiniAssociati = numeroLettiniAssociati;
+        this.location = location;
     }
 }
 

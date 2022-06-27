@@ -5,38 +5,55 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.neo4j.core.schema.GeneratedValue;
 import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.Node;
+import org.springframework.data.neo4j.core.schema.Relationship;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Objects;
+import java.util.*;
 
 @Data
 @NoArgsConstructor
 @Node
-public class Spiaggia {
+public class Spiaggia {  //TODO fare in modo che gli ombrelloni che vengono creati per la prima volta siano con solo le coordinate
 
     @Id
     @GeneratedValue
     private Long id;
-    private ArrayList<ArrayList<Ombrellone>> listaOmbrelloni;
+
+    @Relationship(type = "CONTIENE",direction = Relationship.Direction.OUTGOING)
+    private ArrayList<Ombrellone> listaOmbrelloni;
+
+    private int numeroRighe;
     private int totaleOmbrelloni;
 
-    public ArrayList<ArrayList<Ombrellone>> getListaOmbrelloni(){
-        return this.listaOmbrelloni;
-    }
+    public ArrayList<ArrayList<Ombrellone>> getListaOmbrelloni(){ //TODO controllare se funziona
+        ArrayList<ArrayList<Ombrellone>> grigliaOmbrelloni = new ArrayList<>();
+        for(int i = 0;i<numeroRighe;i++) grigliaOmbrelloni.add(new ArrayList<>());
 
-    public int getTotaleOmbrelloni(){
-        return this.totaleOmbrelloni;
+        for(ArrayList<Ombrellone> riga : grigliaOmbrelloni){
+            int indiceRiga = grigliaOmbrelloni.indexOf(riga);
+            Collection<Ombrellone> ombrelloniRiga = this.listaOmbrelloni.stream()
+                    .filter(a -> a.getLocation().getYAxis() == indiceRiga).toList();
+            for(int i = 0;i<ombrelloniRiga.size();i++){
+                int appoggio = i;
+                riga.add(ombrelloniRiga.stream().filter(a -> a.getLocation().getXAxis() == appoggio).findFirst().orElseThrow());
+            }
+        }
+        return grigliaOmbrelloni;
     }
 
     public boolean isLocationOccupied(Coordinate coordinate) {
-        return listaOmbrelloni.get(coordinate.getYAxis()).get(coordinate.getXAxis()) != null;
+        return this.listaOmbrelloni.stream()
+                .filter(a -> a.getLocation().getXAxis() == coordinate.getXAxis()
+                        && a.getLocation().getYAxis() == coordinate.getYAxis())
+                .toList().get(0).getNomeTipo() != null;
     }
 
     public Ombrellone getOmbrelloneAtLocation(Coordinate location) {
-        return listaOmbrelloni.get(location.getYAxis()).get(location.getXAxis());
+        return this.listaOmbrelloni.stream()
+                .filter(a -> a.getLocation().getXAxis() == location.getXAxis()
+                        && a.getLocation().getYAxis() == location.getYAxis()).findFirst().orElseThrow();
     }
 
+    //TODO continuare da qui
     public void scambiaOmbrelloni(Ombrellone primoOmbrellone, Ombrellone secondoOmbrellone) {
         int filaPrimoOmbrellone = primoOmbrellone.getLocation().getXAxis();
         int colonnaPrimoOmbrellone = primoOmbrellone.getLocation().getYAxis();
@@ -48,6 +65,7 @@ public class Spiaggia {
         secondoOmbrellone.setLocation(new Coordinate(filaSecondoOmbrellone,colonnaSecondoOmbrellone));
     }
 
+    //TODO cambiare rispetto a come funziona ora l'ombrellone nullo
     public void spostaOmbrellone(Ombrellone ombrellone, Coordinate nuoveCoordinate) {
         int filaOmbrellone = ombrellone.getLocation().getYAxis();
         int colonnaOmbrellone = ombrellone.getLocation().getXAxis();

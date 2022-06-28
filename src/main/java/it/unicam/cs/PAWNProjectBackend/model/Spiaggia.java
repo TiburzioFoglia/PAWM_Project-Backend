@@ -12,7 +12,7 @@ import java.util.*;
 @Data
 @NoArgsConstructor
 @Node
-public class Spiaggia {  //TODO fare in modo che gli ombrelloni che vengono creati per la prima volta siano con solo le coordinate
+public class Spiaggia {
 
     @Id
     @GeneratedValue
@@ -24,7 +24,7 @@ public class Spiaggia {  //TODO fare in modo che gli ombrelloni che vengono crea
     private int numeroRighe;
     private int totaleOmbrelloni;
 
-    public ArrayList<ArrayList<Ombrellone>> getListaOmbrelloni(){ //TODO controllare se funziona
+    public ArrayList<ArrayList<Ombrellone>> getListaOmbrelloni(){
         ArrayList<ArrayList<Ombrellone>> grigliaOmbrelloni = new ArrayList<>();
         for(int i = 0;i<numeroRighe;i++) grigliaOmbrelloni.add(new ArrayList<>());
 
@@ -53,63 +53,51 @@ public class Spiaggia {  //TODO fare in modo che gli ombrelloni che vengono crea
                         && a.getLocation().getYAxis() == location.getYAxis()).findFirst().orElseThrow();
     }
 
-    //TODO continuare da qui
     public void scambiaOmbrelloni(Ombrellone primoOmbrellone, Ombrellone secondoOmbrellone) {
-        int filaPrimoOmbrellone = primoOmbrellone.getLocation().getXAxis();
-        int colonnaPrimoOmbrellone = primoOmbrellone.getLocation().getYAxis();
-        int filaSecondoOmbrellone = secondoOmbrellone.getLocation().getXAxis();
-        int colonnaSecondoOmbrellone = secondoOmbrellone.getLocation().getYAxis();
-        listaOmbrelloni.get(filaPrimoOmbrellone).set(colonnaPrimoOmbrellone, secondoOmbrellone);
-        listaOmbrelloni.get(filaSecondoOmbrellone).set(colonnaSecondoOmbrellone, primoOmbrellone);
-        primoOmbrellone.setLocation(new Coordinate(filaSecondoOmbrellone,colonnaPrimoOmbrellone));
-        secondoOmbrellone.setLocation(new Coordinate(filaSecondoOmbrellone,colonnaSecondoOmbrellone));
+        Coordinate coordinatePrimoOmbrellone = primoOmbrellone.getLocation();
+        Coordinate coordinateSecondoOmbrellone = secondoOmbrellone.getLocation();
+
+        this.listaOmbrelloni.stream().filter(a -> a.equals(primoOmbrellone))
+                .findFirst().orElseThrow().setLocation(coordinateSecondoOmbrellone);
+        this.listaOmbrelloni.stream().filter(a -> a.equals(secondoOmbrellone))
+                .findFirst().orElseThrow().setLocation(coordinatePrimoOmbrellone);
     }
 
-    //TODO cambiare rispetto a come funziona ora l'ombrellone nullo
     public void spostaOmbrellone(Ombrellone ombrellone, Coordinate nuoveCoordinate) {
-        int filaOmbrellone = ombrellone.getLocation().getYAxis();
-        int colonnaOmbrellone = ombrellone.getLocation().getXAxis();
-        listaOmbrelloni.get(filaOmbrellone).set(colonnaOmbrellone, null);
-        listaOmbrelloni.get(nuoveCoordinate.getYAxis()).set(nuoveCoordinate.getXAxis(), ombrellone);
-        ombrellone.setLocation(nuoveCoordinate);
+        Coordinate appoggio = ombrellone.getLocation();
+        this.listaOmbrelloni.remove(this.listaOmbrelloni.stream()
+                .filter(a -> a.getLocation().equals(nuoveCoordinate)).findFirst().orElseThrow());
+        this.listaOmbrelloni.stream().filter(a -> a.equals(ombrellone))
+                .findFirst().orElseThrow().setLocation(nuoveCoordinate);
+        this.listaOmbrelloni.add(new Ombrellone(appoggio));
     }
 
     public void aggiornaTipologiaOmbrellone(Ombrellone ombrellone, String tipologia) {
-        int filaOmbrellone = ombrellone.getLocation().getYAxis();
-        int colonnaOmbrellone = ombrellone.getLocation().getXAxis();
-        listaOmbrelloni.get(filaOmbrellone).get(colonnaOmbrellone).setNomeTipo(tipologia);
+        this.listaOmbrelloni.stream().filter(a -> a.equals(ombrellone))
+                .findFirst().orElseThrow().setNomeTipo(tipologia);
     }
 
-    public boolean rimuoviOmbrellone(Ombrellone ombrellone){
-        Ombrellone ombrelloneDaRimuovere;
-        Ombrellone currentOmbrellone;
-        for(ArrayList<Ombrellone> currentRow : listaOmbrelloni) {
-            Iterator<Ombrellone>iter = currentRow.iterator();
-            while(iter.hasNext()) {
-                currentOmbrellone = iter.next();
-                if(currentOmbrellone != null) {
-                    if (currentOmbrellone.equals(ombrellone))
-                        if (!currentOmbrellone.isPrenotato()) {
-                            iter.remove();
-                            totaleOmbrelloni--;
-                            return true;
-                        } else System.out.println("Ombrellone prenotato non rimuovibile");
-                }
-            }
-        }
-        return false;
+    public void rimuoviOmbrellone(Ombrellone ombrellone){ //TODO fare il controllo prenotazione prima di entrare qui
+        this.listaOmbrelloni.remove(ombrellone);
+        this.listaOmbrelloni.add(new Ombrellone(ombrellone.getLocation()));
+        this.totaleOmbrelloni--;
     }
 
     public void aggiungiOmbrellone(Ombrellone ombrellone){
-        int coordinataX = ombrellone.getLocation().getXAxis();
-        int coordinataY = ombrellone.getLocation().getYAxis();
-        if(coordinataY < this.listaOmbrelloni.size() && coordinataX < this.listaOmbrelloni.get(coordinataY).size() && coordinataX >= 0 && coordinataY >= 0) {
-            this.listaOmbrelloni.get(coordinataY).set(coordinataX, ombrellone);
-            totaleOmbrelloni++;
+        if(this.listaOmbrelloni.stream().filter(a -> a.getLocation().equals(ombrellone.getLocation()))
+                .toList().size() > 0){
+            this.listaOmbrelloni.remove(this.listaOmbrelloni.stream()
+                    .filter(a -> a.getLocation().equals(ombrellone.getLocation())).findFirst().orElseThrow());
+            this.listaOmbrelloni.add(ombrellone);
+            this.totaleOmbrelloni++;
         }
-        else System.out.println("Le coordinate inserite non rientrano nei limiti della griglia spiaggia, la scelta viene annullata");
+        //TODO controllare nel caso dell'if falso il fatto che potrebbe non star venendo inserito all'interno della griglia
+        //(non dovrebbe essere un problema perche c'e' il frontend
     }
 
+
+    //TODO cambiare in base all'handler
+    /*
     public Ombrellone getOmbrellone(int idOmbrellone) {
         for(ArrayList<Ombrellone> currentRow: listaOmbrelloni)
             for(Ombrellone ombrelloneCorrente : currentRow)
@@ -121,7 +109,7 @@ public class Spiaggia {  //TODO fare in modo che gli ombrelloni che vengono crea
                 }
         return null;
     }
-
+    */
 
     public ArrayList<Coordinate> ottieniPostiSenzaOmbrelloni(){
 
@@ -131,7 +119,7 @@ public class Spiaggia {  //TODO fare in modo che gli ombrelloni che vengono crea
 
         for (ArrayList<Ombrellone> riga : this.getListaOmbrelloni()) {
             for (Ombrellone ombrellone : riga) {
-                if(ombrellone == null){
+                if(ombrellone.getNomeTipo() == null){
                     coordinate.add(new Coordinate(x,y));
                 }
                 else coordinate.add(null);
@@ -145,9 +133,15 @@ public class Spiaggia {  //TODO fare in modo che gli ombrelloni che vengono crea
     }
 
     public void aggiungiGrigliaSpiaggia(ArrayList<ArrayList<Ombrellone>> grigliaSpiaggia) {
-        this.listaOmbrelloni = grigliaSpiaggia;
+        ArrayList<Ombrellone> listaOmbrelloniSpiaggia = new ArrayList<>();
+        for(ArrayList<Ombrellone> riga : grigliaSpiaggia){
+            listaOmbrelloniSpiaggia.addAll(riga);
+        }
+        this.listaOmbrelloni = listaOmbrelloniSpiaggia;
     }
 
+    //TODO controllare come sopra
+    /*
     public boolean controlloEsistenzaOmbrellone(int idOmbrellone){
         for(ArrayList<Ombrellone> fila : this.listaOmbrelloni){
             for(Ombrellone ombrellone : fila){
@@ -158,78 +152,57 @@ public class Spiaggia {  //TODO fare in modo che gli ombrelloni che vengono crea
         }
         return false;
     }
+     */
+
 
     public void aggiornaSpiaggia(ArrayList<ArrayList<Ombrellone>> listaOmbrelloni) {
         int tempTotale = 0;
+        ArrayList<Ombrellone> ombrelloni = new ArrayList<>();
         for(ArrayList<Ombrellone> riga : listaOmbrelloni)
-            for(Ombrellone ombrellone : riga)
-                if(ombrellone != null)
-                    tempTotale++;
+            for(Ombrellone ombrellone : riga){
+                if(ombrellone.getNomeTipo() != null) tempTotale++;
+                ombrelloni.add(ombrellone);
+            }
         this.totaleOmbrelloni = tempTotale;
-        this.listaOmbrelloni = listaOmbrelloni;
+        this.listaOmbrelloni = ombrelloni;
     }
 
     public void aggiungiNuovaRiga(int sceltaRiga, String direzione, int lunghezzaNuovaRiga) {
         ArrayList<Ombrellone> appoggio = new ArrayList<>();
-        for(int i = 0;i<lunghezzaNuovaRiga;i++){
-            appoggio.add(null);
-        }
+        ArrayList<ArrayList<Ombrellone>> listaOmbrelloniAppoggio = this.getListaOmbrelloni();
 
         if(Objects.equals(direzione, "sopra")){
-            this.listaOmbrelloni.add(sceltaRiga, appoggio);
+            for(int i = 0;i<lunghezzaNuovaRiga;i++) appoggio.add(new Ombrellone(new Coordinate(i,sceltaRiga)));
+            listaOmbrelloniAppoggio.add(sceltaRiga, appoggio);
         }
         if(Objects.equals(direzione, "sotto")){
-            if(this.listaOmbrelloni.size()-1 == sceltaRiga) this.listaOmbrelloni.add(appoggio);
+            for(int i = 0;i<lunghezzaNuovaRiga;i++) appoggio.add(new Ombrellone(new Coordinate(i,sceltaRiga+1)));
+
+            if(listaOmbrelloniAppoggio.size()-1 == sceltaRiga) listaOmbrelloniAppoggio.add(appoggio);
             else{
-                this.listaOmbrelloni.add(sceltaRiga+1, appoggio);
+                listaOmbrelloniAppoggio.add(sceltaRiga+1, appoggio);
             }
         }
-        this.aggiornaCoordinateOmbrelloniSpiaggia();
+        this.aggiornaCoordinateOmbrelloniSpiaggia(listaOmbrelloniAppoggio);
     }
 
-    private void aggiornaCoordinateOmbrelloniSpiaggia(){
-        int x=0;
+    private void aggiornaCoordinateOmbrelloniSpiaggia(ArrayList<ArrayList<Ombrellone>> listaOmbrelloniAppoggio){
         int y=0;
-        for(ArrayList<Ombrellone> riga:this.listaOmbrelloni){
-            x=0;
+        for(ArrayList<Ombrellone> riga: listaOmbrelloniAppoggio){
+            int x = 0;
             for(Ombrellone ombrellone : riga){
-                if(ombrellone == null) continue;
                 ombrellone.setLocation(new Coordinate(x,y));
                 x++;
             }
             y++;
         }
-    }
-
-    private void modificaCoordinate(int sceltaRiga){
-        if(this.listaOmbrelloni.size() < sceltaRiga){
-            for(int i = sceltaRiga;i<this.listaOmbrelloni.size();i++){
-                for(Ombrellone ombrellone : this.listaOmbrelloni.get(i)){
-                    if(ombrellone == null) continue;
-                    ombrellone.setLocation(new Coordinate(ombrellone.getLocation().getXAxis(),ombrellone.getLocation().getYAxis()+1));
-                }
-            }
-        }
+        this.aggiornaSpiaggia(listaOmbrelloniAppoggio);
     }
 
     public void eliminaRiga(int sceltaRiga) {
-        this.listaOmbrelloni.remove(sceltaRiga);
-        this.aggiornaCoordinateOmbrelloniSpiaggia();
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder str = new StringBuilder();
-        str.append("\n");
-        for (int i = 0; i < this.listaOmbrelloni.size(); i++) {
-            str.append(i).append(" |").append("\t");
-            for (int j = 0; j < this.listaOmbrelloni.get(i).size(); j++) {
-                if(this.listaOmbrelloni.get(i).get(j)==null) str.append(this.listaOmbrelloni.get(i).get(j)).append("\t");
-                else str.append(" ⛱  ").append("\t");
-            }
-            str.append("\n");
-        }
-        return str.toString();
+        ArrayList<ArrayList<Ombrellone>> listaOmbrelloniAppoggio = this.getListaOmbrelloni();
+        listaOmbrelloniAppoggio.remove(sceltaRiga);
+        this.aggiornaCoordinateOmbrelloniSpiaggia(listaOmbrelloniAppoggio);
     }
 
 }

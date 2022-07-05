@@ -57,42 +57,21 @@ public class Spiaggia {
         Coordinate coordinatePrimoOmbrellone = primoOmbrellone.getLocation();
         Coordinate coordinateSecondoOmbrellone = secondoOmbrellone.getLocation();
 
-        this.listaOmbrelloni.stream().filter(a -> a.equals(primoOmbrellone))
-                .findFirst().orElseThrow().setLocation(coordinateSecondoOmbrellone);
-        this.listaOmbrelloni.stream().filter(a -> a.equals(secondoOmbrellone))
-                .findFirst().orElseThrow().setLocation(coordinatePrimoOmbrellone);
+        primoOmbrellone.setLocation(coordinateSecondoOmbrellone);
+        secondoOmbrellone.setLocation(coordinatePrimoOmbrellone);
     }
 
     public void spostaOmbrellone(Ombrellone ombrellone, Coordinate nuoveCoordinate) {
-        Coordinate appoggio = ombrellone.getLocation();
-        this.listaOmbrelloni.remove(this.listaOmbrelloni.stream()
-                .filter(a -> a.getLocation().equals(nuoveCoordinate)).findFirst().orElseThrow());
-        this.listaOmbrelloni.stream().filter(a -> a.equals(ombrellone))
-                .findFirst().orElseThrow().setLocation(nuoveCoordinate);
-        this.listaOmbrelloni.add(new Ombrellone(appoggio));
+        Ombrellone secondoOmbrellone = this.listaOmbrelloni.stream()
+                .filter(a -> a.getLocation().equals(nuoveCoordinate)).findFirst().orElseThrow();
+
+        this.scambiaOmbrelloni(ombrellone,secondoOmbrellone);
     }
 
-    public void aggiornaTipologiaOmbrellone(Ombrellone ombrellone, String tipologia) {
-        this.listaOmbrelloni.stream().filter(a -> a.equals(ombrellone))
-                .findFirst().orElseThrow().setNomeTipo(tipologia);
-    }
 
-    public void rimuoviOmbrellone(Ombrellone ombrellone){ //TODO fare il controllo prenotazione prima di entrare qui
-        this.listaOmbrelloni.remove(ombrellone);
-        this.listaOmbrelloni.add(new Ombrellone(ombrellone.getLocation()));
-        this.totaleOmbrelloni--;
-    }
-
-    public void aggiungiOmbrellone(Ombrellone ombrellone){
-        if(this.listaOmbrelloni.stream().filter(a -> a.getLocation().equals(ombrellone.getLocation()))
-                .toList().size() > 0){
-            this.listaOmbrelloni.remove(this.listaOmbrelloni.stream()
-                    .filter(a -> a.getLocation().equals(ombrellone.getLocation())).findFirst().orElseThrow());
-            this.listaOmbrelloni.add(ombrellone);
+    public void aggiungiOmbrellone(Ombrellone ombrellone, String tipo){
+            this.modificaTipologiaOmbrellone(ombrellone,tipo);
             this.totaleOmbrelloni++;
-        }
-        //TODO controllare nel caso dell'if falso il fatto che potrebbe non star venendo inserito all'interno della griglia
-        //(non dovrebbe essere un problema perche c'e' il frontend
     }
 
 
@@ -204,5 +183,28 @@ public class Spiaggia {
         listaOmbrelloniAppoggio.remove(sceltaRiga);
         this.aggiornaCoordinateOmbrelloniSpiaggia(listaOmbrelloniAppoggio);
     }
+
+    public Ombrellone getOmbrelloneById(Long id) {
+        return this.listaOmbrelloni.stream().filter(a -> a.getId().equals(id)).findFirst().orElseThrow();
+    }
+
+    public void rimuoviOmbrellone(Ombrellone ombrellone){
+        ombrellone.setNomeTipo(null);
+        this.totaleOmbrelloni--;
+    }
+
+    public void modificaTipologiaOmbrellone(Ombrellone ombrellone, String nomeTipo) {
+        ombrellone.setNomeTipo(nomeTipo);
+    }
+
+
+
+
+
+
+
+
+
+
 
 }

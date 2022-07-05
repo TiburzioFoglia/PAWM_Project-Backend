@@ -1,48 +1,26 @@
 package it.unicam.cs.PAWNProjectBackend.service;
 
 import it.unicam.cs.PAWNProjectBackend.model.*;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+@Service
+@RequiredArgsConstructor
 public class HandlerPrenotazione {
 
     private final HandlerSpiaggia handlerSpiaggiaAssociato;
     private ArrayList<Prenotazione> listaPrenotazioni;
     private Prenotazione prenotazioneInCorso;
     private final DBMSController associatedDBMS;
-    private Scanner sc = new Scanner(System.in);
     private HashMap<ProdottoBar, Integer> carrello;
     private ArrayList<String> codiciCouponValidi;
     private HandlerAttivita handlerAttivitaAssociato;
     private HandlerListino handlerListinoAssociato;
-    private static HandlerPrenotazione instance = null;
-
-    private HandlerPrenotazione() {
-        this.handlerListinoAssociato = HandlerListino.getInstance();
-        this.codiciCouponValidi = new ArrayList<>();
-        listaPrenotazioni = new ArrayList<>();
-        this.associatedDBMS = DBMSController.getInstance();
-        this.handlerSpiaggiaAssociato = HandlerSpiaggia.getInstance();
-        this.handlerAttivitaAssociato = HandlerAttivita.getInstance();
-    }
-
-    public static HandlerPrenotazione getInstance() {
-        if (instance == null) {
-            instance = new HandlerPrenotazione();
-        }
-        return instance;
-    }
-
-    public ArrayList<Prenotazione> getListaPrenotazioni() {
-        return listaPrenotazioni;
-    }
-
-    public void setListaPrenotazioni(ArrayList<Prenotazione> listaPrenotazioni) {
-        this.listaPrenotazioni = listaPrenotazioni;
-    }
 
     public void partecipaEvento(int idCliente){
         this.listaPrenotazioni = this.associatedDBMS.ottieniListaPrenotazioni();

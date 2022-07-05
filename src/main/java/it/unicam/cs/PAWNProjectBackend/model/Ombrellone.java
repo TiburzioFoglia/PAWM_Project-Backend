@@ -16,7 +16,6 @@ public class Ombrellone {
     @GeneratedValue
     private Long id;
     private String nomeTipo;
-    private int numeroLettiniAssociati;
     private boolean prenotato;
 
     @Relationship(type = "HAS_COORDINATES",direction = Relationship.Direction.OUTGOING)
@@ -30,13 +29,11 @@ public class Ombrellone {
     public Ombrellone(String nomeTipo, Coordinate location){
         this.location = location;
         this.nomeTipo = nomeTipo;
-        this.numeroLettiniAssociati = 0;
         this.prenotato = false;
     }
 
     public Ombrellone(String nomeTipo, Coordinate location , int numeroLettiniAssociati) {
         this.nomeTipo = nomeTipo;
-        this.numeroLettiniAssociati = numeroLettiniAssociati;
         this.location = location;
     }
 }

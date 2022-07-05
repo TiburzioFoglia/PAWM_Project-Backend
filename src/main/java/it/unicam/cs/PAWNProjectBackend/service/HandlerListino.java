@@ -413,8 +413,8 @@ public class HandlerListino {
         return nuovoPrezzo;
     }
 
-    public HashMap<TipologiaOmbrellone, Double> ottieniPrezziTipologie() {
-        this.listinoGestito.aggiornaTipologie(this.associatedDBMS.ottieniTipologie());
+    public HashMap<TipologiaOmbrellone, Double> ottieniPrezziTipologie() { //fatto
+        this.listinoGestito = this.associatedDBMS.ottieniListino();
         return this.listinoGestito.getPrezziTipologia();
     }
 

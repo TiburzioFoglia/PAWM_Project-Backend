@@ -21,7 +21,9 @@ public class HandlerSpiaggia {
 
 
     /**
-     * Questo metodo serve ad aggiungere un ombrellone alla Spiaggia
+     * Questo metodo serve ad aggiungere un ombrellone
+     * @param tipo nome della tipologia
+     * @param coordinateScelte coordinate in cui aggiungere l'ombrellone
      */
     public void aggiungiOmbrellone(String tipo , Coordinate coordinateScelte) {
         this.spiaggiaGestita = this.dbmsController.getSpiaggia();
@@ -34,6 +36,12 @@ public class HandlerSpiaggia {
     }
 
 
+    /**
+     * Questo metodo serve a modificare un ombrellone
+     * @param id id dell'ombrellone da modificare
+     * @param nomeTipo nome della tipologia, null se non la si vuole modificare
+     * @param coordinate coordinate in cui spostare l'ombrellone, null se non la si vuole modificare
+     */
     public void modificaOmbrellone(Long id , String nomeTipo, Coordinate coordinate){
         this.spiaggiaGestita = this.dbmsController.getSpiaggia();
         Ombrellone ombrellone = this.spiaggiaGestita.getOmbrelloneById(id);
@@ -41,7 +49,7 @@ public class HandlerSpiaggia {
         if(nomeTipo == null) this.spiaggiaGestita.rimuoviOmbrellone(ombrellone);
         else this.spiaggiaGestita.modificaTipologiaOmbrellone(ombrellone,nomeTipo);
 
-        if(ombrellone.getLocation().getXAxis() != coordinate.getXAxis() || ombrellone.getLocation().getYAxis() != coordinate.getYAxis()){
+        if(nomeTipo != null && (ombrellone.getLocation().getXAxis() != coordinate.getXAxis() || ombrellone.getLocation().getYAxis() != coordinate.getYAxis())){
             Ombrellone ombrelloneTarget = this.spiaggiaGestita.getOmbrelloneAtLocation(coordinate);
             if(ombrelloneTarget.getNomeTipo() ==  null) this.spiaggiaGestita.spostaOmbrellone(ombrellone,coordinate);
             else this.spiaggiaGestita.scambiaOmbrelloni(ombrellone,ombrelloneTarget);
@@ -52,6 +60,10 @@ public class HandlerSpiaggia {
     }
 
 
+    /**
+     * Questo metodo serve ad aggiungere una griglia alla spiaggia
+     * @param griglia la griglia da aggiungere
+     */
     public void aggiungiGrigliaSpiaggia(Map<String, Integer> griglia){
         ArrayList<Ombrellone> listaOmbrelloni =  new ArrayList<>();
 
@@ -70,23 +82,13 @@ public class HandlerSpiaggia {
     }
 
     public void modificaGrigliaSpiaggia(){ //TODO in fase di modifica
+        this.spiaggiaGestita = this.dbmsController.getSpiaggia();
 
-        this.spiaggiaGestita.aggiornaSpiaggia(this.dbmsController.ottieniVistaSpiaggia());
-        ArrayList<ArrayList<Ombrellone>> listaOmbrelloni = this.spiaggiaGestita.getListaOmbrelloni();
-        System.out.println(this.spiaggiaGestita.toString());
 
-        boolean flag;
-        do {
-            this.sceltaModificaGriglia(listaOmbrelloni);
-            listaOmbrelloni = this.spiaggiaGestita.getListaOmbrelloni();
-
-            System.out.println("Vuoi modificare ancora la griglia spiaggia? [y/n] ");
-            flag = Objects.equals(this.sc.nextLine().trim().toLowerCase(Locale.ROOT), "y");
-        }while(flag);
+        this.sceltaModificaGriglia(listaOmbrelloni);
 
 
 
-        
         this.dbmsController.salvaSpiaggia(this.spiaggiaGestita);
     }
 

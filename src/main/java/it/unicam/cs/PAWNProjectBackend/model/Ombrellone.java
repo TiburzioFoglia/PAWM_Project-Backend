@@ -25,17 +25,6 @@ public class Ombrellone {
         this.location = location;
         this.nomeTipo = null;
     }
-
-    public Ombrellone(String nomeTipo, Coordinate location){
-        this.location = location;
-        this.nomeTipo = nomeTipo;
-        this.prenotato = false;
-    }
-
-    public Ombrellone(String nomeTipo, Coordinate location , int numeroLettiniAssociati) {
-        this.nomeTipo = nomeTipo;
-        this.location = location;
-    }
 }
 
 

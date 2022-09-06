@@ -1,12 +1,5 @@
 package it.unicam.cs.PAWNProjectBackend.service;
 
-import com.example.Neo4jExample.model.*;
-import com.example.Neo4jExample.repository.CategoryRepository;
-import com.example.Neo4jExample.repository.CityRepository;
-import com.example.Neo4jExample.repository.PoiTypeRepository;
-import com.example.Neo4jExample.repository.PointOfIntRepository;
-import com.example.Neo4jExample.service.util.MySerializer;
-import com.google.gson.reflect.TypeToken;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +9,7 @@ import java.util.Collection;
 @Service
 @RequiredArgsConstructor
 public class ProvaService {
-    private final PointOfIntRepository pointOfIntRepository;
+    /*private final PointOfIntRepository pointOfIntRepository;
     private final CityRepository cityRepository;
     private final CategoryRepository categoryRepository;
     private final PoiTypeRepository poiTypeRepository;
@@ -74,5 +67,5 @@ public class ProvaService {
     public Collection<TagNode> tagNodeCollectionFromJson(Object json){
         return tagsSerializer.deserialize(tagsSerializer.serialize(json),
                 new TypeToken<Collection<TagNode>>(){}.getType());
-    }
+    }*/
 }

@@ -3,7 +3,6 @@ package it.unicam.cs.PAWNProjectBackend.controller;
 import it.unicam.cs.PAWNProjectBackend.model.*;
 import it.unicam.cs.PAWNProjectBackend.repository.*;
 import it.unicam.cs.PAWNProjectBackend.service.*;
-import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,11 +13,10 @@ import java.util.Map;
 import java.util.Objects;
 
 @RestController
-@RequestMapping("/api")
 @CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 public class ProvaController {
-    private final ProvaService provaService;
+    /*private final ProvaService provaService;
 
     private final CoordinateRepository coordinateRepository;
 
@@ -81,8 +79,8 @@ public class ProvaController {
             }else poiTagRel.setStringValue((String)map.get("value"));
             values.add(poiTagRel);
         }
-/*        Collection<PoiTagRel> poiTagRelsColl = new ArrayList<>();
-        Collections.addAll(poiTagRelsColl, poiTagRels);*/
+*//*        Collection<PoiTagRel> poiTagRelsColl = new ArrayList<>();
+        Collections.addAll(poiTagRelsColl, poiTagRels);*//*
         PointOfInterestNode poi = provaService.createPoi(ente,name,description,address,coordinate,poiTypes,values);
         return Objects.isNull(poi) ? ResponseEntity.internalServerError().body(null) : ResponseEntity.ok(poi);
     }
@@ -93,5 +91,5 @@ public class ProvaController {
         gson.fromJson(body.get("tags").toString(),TagNode.class); //TODO rivedere
         Collection<TagNode> tags = provaService.tagNodeCollectionFromJson(body.get("tags"));
         return ResponseEntity.ok(gson);
-    }
+    }*/
 }

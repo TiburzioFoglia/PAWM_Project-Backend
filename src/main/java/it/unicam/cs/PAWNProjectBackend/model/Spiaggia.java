@@ -21,24 +21,7 @@ public class Spiaggia {
     @Relationship(type = "CONTIENE",direction = Relationship.Direction.OUTGOING)
     private ArrayList<Ombrellone> listaOmbrelloni;
 
-    private int numeroRighe;
     private int totaleOmbrelloni;
-
-    public ArrayList<ArrayList<Ombrellone>> getListaOmbrelloni(){
-        ArrayList<ArrayList<Ombrellone>> grigliaOmbrelloni = new ArrayList<>();
-        for(int i = 0;i<numeroRighe;i++) grigliaOmbrelloni.add(new ArrayList<>());
-
-        for(ArrayList<Ombrellone> riga : grigliaOmbrelloni){
-            int indiceRiga = grigliaOmbrelloni.indexOf(riga);
-            Collection<Ombrellone> ombrelloniRiga = this.listaOmbrelloni.stream()
-                    .filter(a -> a.getLocation().getYAxis() == indiceRiga).toList();
-            for(int i = 0;i<ombrelloniRiga.size();i++){
-                int appoggio = i;
-                riga.add(ombrelloniRiga.stream().filter(a -> a.getLocation().getXAxis() == appoggio).findFirst().orElseThrow());
-            }
-        }
-        return grigliaOmbrelloni;
-    }
 
     public boolean isLocationOccupied(Coordinate coordinate) {
         return this.listaOmbrelloni.stream()
@@ -90,27 +73,6 @@ public class Spiaggia {
     }
     */
 
-    public ArrayList<Coordinate> ottieniPostiSenzaOmbrelloni(){
-
-        ArrayList<Coordinate> coordinate = new ArrayList<>();
-        int x = 0;
-        int y = 0;
-
-        for (ArrayList<Ombrellone> riga : this.getListaOmbrelloni()) {
-            for (Ombrellone ombrellone : riga) {
-                if(ombrellone.getNomeTipo() == null){
-                    coordinate.add(new Coordinate(x,y));
-                }
-                else coordinate.add(null);
-                x++;
-            }
-            x=0;
-            y++;
-        }
-
-        return coordinate;
-    }
-
     public void aggiungiGrigliaSpiaggia(ArrayList<ArrayList<Ombrellone>> grigliaSpiaggia) {
         ArrayList<Ombrellone> listaOmbrelloniSpiaggia = new ArrayList<>();
         for(ArrayList<Ombrellone> riga : grigliaSpiaggia){
@@ -134,19 +96,7 @@ public class Spiaggia {
      */
 
 
-    public void aggiornaSpiaggia(ArrayList<ArrayList<Ombrellone>> listaOmbrelloni) {
-        int tempTotale = 0;
-        ArrayList<Ombrellone> ombrelloni = new ArrayList<>();
-        for(ArrayList<Ombrellone> riga : listaOmbrelloni)
-            for(Ombrellone ombrellone : riga){
-                if(ombrellone.getNomeTipo() != null) tempTotale++;
-                ombrelloni.add(ombrellone);
-            }
-        this.totaleOmbrelloni = tempTotale;
-        this.listaOmbrelloni = ombrelloni;
-    }
-
-    public void aggiungiNuovaRiga(int sceltaRiga, String direzione, int lunghezzaNuovaRiga) {
+   /* public void aggiungiNuovaRiga(int sceltaRiga, String direzione, int lunghezzaNuovaRiga) {
         ArrayList<Ombrellone> appoggio = new ArrayList<>();
         ArrayList<ArrayList<Ombrellone>> listaOmbrelloniAppoggio = this.getListaOmbrelloni();
 
@@ -163,26 +113,14 @@ public class Spiaggia {
             }
         }
         this.aggiornaCoordinateOmbrelloniSpiaggia(listaOmbrelloniAppoggio);
-    }
+    }*/
 
-    private void aggiornaCoordinateOmbrelloniSpiaggia(ArrayList<ArrayList<Ombrellone>> listaOmbrelloniAppoggio){
-        int y=0;
-        for(ArrayList<Ombrellone> riga: listaOmbrelloniAppoggio){
-            int x = 0;
-            for(Ombrellone ombrellone : riga){
-                ombrellone.setLocation(new Coordinate(x,y));
-                x++;
-            }
-            y++;
-        }
-        this.aggiornaSpiaggia(listaOmbrelloniAppoggio);
-    }
 
-    public void eliminaRiga(int sceltaRiga) {
+    /*public void eliminaRiga(int sceltaRiga) {
         ArrayList<ArrayList<Ombrellone>> listaOmbrelloniAppoggio = this.getListaOmbrelloni();
         listaOmbrelloniAppoggio.remove(sceltaRiga);
         this.aggiornaCoordinateOmbrelloniSpiaggia(listaOmbrelloniAppoggio);
-    }
+    }*/
 
     public Ombrellone getOmbrelloneById(Long id) {
         return this.listaOmbrelloni.stream().filter(a -> a.getId().equals(id)).findFirst().orElseThrow();
@@ -198,13 +136,13 @@ public class Spiaggia {
     }
 
 
+    /**
+     * Questo metodo controlla la lista ombrelloni della spiaggia e conteggia il numero di ombrelloni presenti
+     */
+    public void aggiornaTotaleOmbrelloni() {
+        int totaleOmbrelloni = 0;
+        for(Ombrellone ombrellone : this.listaOmbrelloni) if(ombrellone.getNomeTipo() != null) totaleOmbrelloni++;
+        this.totaleOmbrelloni = totaleOmbrelloni;
 
-
-
-
-
-
-
-
-
+    }
 }

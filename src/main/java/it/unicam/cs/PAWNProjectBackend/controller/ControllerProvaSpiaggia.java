@@ -22,44 +22,5 @@ public class ControllerProvaSpiaggia {
 
 
 
-    @GetMapping("/spiaggia/vista")
-    public ResponseEntity<Spiaggia> getSpiaggia(){
-        return ResponseEntity.ok(this.dbmsController.getSpiaggia());
-    }
-
-    @PostMapping("/spiaggia/aggiungiOmbrellone")
-    public ResponseEntity<Spiaggia> aggiungiOmbrellone(Map<String,Object> body){
-
-        String nomeTipo = (String) body.get("nomeTipo");
-        Coordinate coordinate = (Coordinate) body.get("coordinate");
-
-        this.handlerSpiaggia.aggiungiOmbrellone(nomeTipo,coordinate);
-        return ResponseEntity.ok(this.dbmsController.getSpiaggia());
-    }
-
-    @PostMapping("/spiaggia/modificaOmbrellone")
-    public ResponseEntity<Spiaggia> modificaOmbrellone(Map<String,Object> body){
-
-        Long id = (Long) body.get("id");
-        String nomeTipo = (String) body.get("nomeTipo");
-        Coordinate coordinate = (Coordinate) body.get("coordinate");
-
-        this.handlerSpiaggia.modificaOmbrellone(id,nomeTipo,coordinate);
-        return ResponseEntity.ok(this.dbmsController.getSpiaggia());
-    }
-
-    @PostMapping("/spiaggia/aggiungiGrigliaSpiaggia")
-    public ResponseEntity<Spiaggia> aggiungiGrigliaSpiaggia(Map<String,Object> body){
-
-        Map<String,Integer> griglia = new HashMap<>();
-
-        for(String riga : body.keySet()){
-            String numeroPosti = (String) body.get(riga);
-            griglia.put(riga, Integer.parseInt(numeroPosti));
-        }
-
-        this.handlerSpiaggia.aggiungiGrigliaSpiaggia(griglia);
-        return ResponseEntity.ok(this.dbmsController.getSpiaggia());
-    }
 
 }

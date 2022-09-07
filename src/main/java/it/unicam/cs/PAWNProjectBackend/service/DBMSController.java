@@ -5,6 +5,7 @@ import it.unicam.cs.PAWNProjectBackend.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 @Service
@@ -13,6 +14,8 @@ public class DBMSController {
     private final SpiaggiaRepository spiaggiaRepository;
     private final OmbrelloneRepository ombrelloneRepository;
     private final CoordinateRepository coordinateRepository;
+
+    private final TipologiaOmbrelloneRepository tipologiaOmbrelloneRepository;
 
 
     /**
@@ -61,6 +64,31 @@ public class DBMSController {
      */
     public void deleteOmbrellone(Ombrellone ombrellone) {
         this.ombrelloneRepository.delete(ombrellone);
+    }
+
+    /**
+     * Ottieni una tipologia ombrellone dal suo id
+     * @param idTipo l'id della tipologia
+     * @return la tipologia ombrellone cercata
+     */
+    public TipologiaOmbrellone getTipologiaOmbrelloneFromId(Long idTipo) {
+        return this.tipologiaOmbrelloneRepository.findAll().stream().filter(t -> t.getId().equals(idTipo)).findFirst().orElseThrow();
+    }
+
+    /**
+     * Salva la tipologia ombrellone nel db
+     * @param tipologia la tipologia da salvare
+     */
+    public void salvaTipologiaOmbrellone(TipologiaOmbrellone tipologia) {
+        this.tipologiaOmbrelloneRepository.save(tipologia);
+    }
+
+    /**
+     * Ottieni la lista di tutte le tipologie ombrellone
+     * @return la lista delle tipologie ombrellone
+     */
+    public Collection<TipologiaOmbrellone> getListaTipologieOmbrellone() {
+        return this.tipologiaOmbrelloneRepository.findAll().stream().toList();
     }
 
 

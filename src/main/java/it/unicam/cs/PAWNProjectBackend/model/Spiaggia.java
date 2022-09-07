@@ -27,7 +27,7 @@ public class Spiaggia {
         return this.listaOmbrelloni.stream()
                 .filter(a -> a.getLocation().getXAxis() == coordinate.getXAxis()
                         && a.getLocation().getYAxis() == coordinate.getYAxis())
-                .toList().get(0).getNomeTipo() != null;
+                .toList().get(0).getTipologia() != null;
     }
 
     public Ombrellone getOmbrelloneAtLocation(Coordinate location) {
@@ -52,12 +52,6 @@ public class Spiaggia {
     }
 
 
-    public void aggiungiOmbrellone(Ombrellone ombrellone, String tipo){
-            this.modificaTipologiaOmbrellone(ombrellone,tipo);
-            this.totaleOmbrelloni++;
-    }
-
-
     //TODO cambiare in base all'handler
     /*
     public Ombrellone getOmbrellone(int idOmbrellone) {
@@ -72,14 +66,6 @@ public class Spiaggia {
         return null;
     }
     */
-
-    public void aggiungiGrigliaSpiaggia(ArrayList<ArrayList<Ombrellone>> grigliaSpiaggia) {
-        ArrayList<Ombrellone> listaOmbrelloniSpiaggia = new ArrayList<>();
-        for(ArrayList<Ombrellone> riga : grigliaSpiaggia){
-            listaOmbrelloniSpiaggia.addAll(riga);
-        }
-        this.listaOmbrelloni = listaOmbrelloniSpiaggia;
-    }
 
     //TODO controllare come sopra
     /*
@@ -126,14 +112,14 @@ public class Spiaggia {
         return this.listaOmbrelloni.stream().filter(a -> a.getId().equals(id)).findFirst().orElseThrow();
     }
 
-    public void rimuoviOmbrellone(Ombrellone ombrellone){
+    /*public void rimuoviOmbrellone(Ombrellone ombrellone){
         ombrellone.setNomeTipo(null);
         this.totaleOmbrelloni--;
-    }
+    }*/
 
-    public void modificaTipologiaOmbrellone(Ombrellone ombrellone, String nomeTipo) {
+    /*public void modificaTipologiaOmbrellone(Ombrellone ombrellone, String nomeTipo) {
         ombrellone.setNomeTipo(nomeTipo);
-    }
+    }*/
 
 
     /**
@@ -141,7 +127,7 @@ public class Spiaggia {
      */
     public void aggiornaTotaleOmbrelloni() {
         int totaleOmbrelloni = 0;
-        for(Ombrellone ombrellone : this.listaOmbrelloni) if(ombrellone.getNomeTipo() != null) totaleOmbrelloni++;
+        for(Ombrellone ombrellone : this.listaOmbrelloni) if(ombrellone.getTipologia() != null) totaleOmbrelloni++;
         this.totaleOmbrelloni = totaleOmbrelloni;
 
     }

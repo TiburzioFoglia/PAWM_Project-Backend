@@ -1,9 +1,10 @@
 it\unicam\cs\PAWNProjectBackend\service\DBMSController.class
 it\unicam\cs\PAWNProjectBackend\service\HandlerSpiaggia.class
-it\unicam\cs\PAWNProjectBackend\controller\ControllerUtente.class
 it\unicam\cs\PAWNProjectBackend\controller\AdministrationController.class
+it\unicam\cs\PAWNProjectBackend\controller\UserController.class
 it\unicam\cs\PAWNProjectBackend\service\ProvaService.class
+it\unicam\cs\PAWNProjectBackend\controller\DefaultController.class
 it\unicam\cs\PAWNProjectBackend\model\Spiaggia.class
-it\unicam\cs\PAWNProjectBackend\controller\ProvaController.class
+it\unicam\cs\PAWNProjectBackend\repository\TipologiaOmbrelloneRepository.class
 it\unicam\cs\PAWNProjectBackend\repository\SpiaggiaRepository.class
-it\unicam\cs\PAWNProjectBackend\controller\ControllerProvaSpiaggia.class
+it\unicam\cs\PAWNProjectBackend\model\TipologiaOmbrellone.class

@@ -9,5 +9,5 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 @Slf4j
-public class ControllerUtente {
+public class UserController {
 }

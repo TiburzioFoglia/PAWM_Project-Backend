@@ -15,15 +15,16 @@ public class Ombrellone {
     @Id
     @GeneratedValue
     private Long id;
-    private String nomeTipo;
-    private boolean prenotato;
 
-    @Relationship(type = "HAS_COORDINATES",direction = Relationship.Direction.OUTGOING)
+    @Relationship(type = "HAS_TIPOLOGIA",direction = Relationship.Direction.OUTGOING)
+    private TipologiaOmbrellone tipologia;
+
+    @Relationship(type = "HAS_COORDINATE",direction = Relationship.Direction.OUTGOING)
     private Coordinate location;
 
     public Ombrellone(Coordinate location) {
         this.location = location;
-        this.nomeTipo = null;
+        this.tipologia = null;
     }
 }
 

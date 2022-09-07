@@ -5,6 +5,7 @@ import java.util.*;
 import it.unicam.cs.PAWNProjectBackend.model.Coordinate;
 import it.unicam.cs.PAWNProjectBackend.model.Ombrellone;
 import it.unicam.cs.PAWNProjectBackend.model.Spiaggia;
+import it.unicam.cs.PAWNProjectBackend.model.TipologiaOmbrellone;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,13 +21,14 @@ public class HandlerSpiaggia {
 
     /**
      * Questo metodo serve ad aggiungere un ombrellone
-     * @param tipo nome della tipologia
+     * @param tipo la tipologia dell'ombrellone
      * @param coordinateScelte coordinate in cui aggiungere l'ombrellone
      */
-    public void aggiungiOmbrellone(String tipo , Coordinate coordinateScelte) {
+    public void aggiungiOmbrellone(TipologiaOmbrellone tipo , Coordinate coordinateScelte) {
         this.spiaggiaGestita = this.dbmsController.getSpiaggia();
         Ombrellone ombrellone = this.spiaggiaGestita.getOmbrelloneAtLocation(coordinateScelte);
-        this.spiaggiaGestita.aggiungiOmbrellone(ombrellone,tipo);
+        ombrellone.setTipologia(tipo);
+        this.spiaggiaGestita.aggiornaTotaleOmbrelloni();
         log.info("totale ombrelloni: {}", this.spiaggiaGestita.getTotaleOmbrelloni());
         this.dbmsController.salvaOmbrellone(ombrellone);
         this.dbmsController.salvaSpiaggia(this.spiaggiaGestita);
@@ -74,6 +76,7 @@ public class HandlerSpiaggia {
                 else{
                     log.info("Cerco ombrellone esistente con id: {}",listaIdOmbrelloni.get(contatoreTotale));
                     Ombrellone ombrelloneEsistente = this.spiaggiaGestita.getOmbrelloneById(listaIdOmbrelloni.get(contatoreTotale));
+                    if(ombrelloneEsistente.getTipologia() == null) throw new IllegalArgumentException();
                     log.info("Ombrellone trovato pre modifica: {}",ombrelloneEsistente);
                     ombrelloneEsistente.getLocation().setXAxis(j);
                     ombrelloneEsistente.getLocation().setYAxis(i);
@@ -91,14 +94,31 @@ public class HandlerSpiaggia {
 
     private void deletePostiSenzaOmbrelloni(ArrayList<Ombrellone> listaOmbrelloni) {
         for(Ombrellone ombrellone : listaOmbrelloni){
-            if(ombrellone.getNomeTipo() == null){
+            if(ombrellone.getTipologia() == null){
                 this.dbmsController.deleteCoordinate(ombrellone.getLocation());
                 this.dbmsController.deleteOmbrellone(ombrellone);
             }
         }
     }
 
-/*
+    /**
+     * Questo metodo serve ad aggiungere una tipologia ombrellone
+     * @param nome il nome della nuova tipologia
+     * @param descrizione la descrizione della nuova tipologia
+     * @return la nuova tipologia
+     */
+    public TipologiaOmbrellone aggiungiTipologiaOmbrellone(String nome, String descrizione) {
+        TipologiaOmbrellone nuovaTipologia = new TipologiaOmbrellone(nome,descrizione);
+        this.dbmsController.salvaTipologiaOmbrellone(nuovaTipologia);
+        log.info("La nuova tipologia creata: {}", nuovaTipologia);
+        return nuovaTipologia;
+    }
+
+
+
+
+
+    /*
     *//**
      * Questo metodo serve a modificare un ombrellone
      * @param id id dell'ombrellone da modificare

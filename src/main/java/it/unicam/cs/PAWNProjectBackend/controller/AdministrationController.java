@@ -3,6 +3,7 @@ package it.unicam.cs.PAWNProjectBackend.controller;
 
 import it.unicam.cs.PAWNProjectBackend.model.Coordinate;
 import it.unicam.cs.PAWNProjectBackend.model.Spiaggia;
+import it.unicam.cs.PAWNProjectBackend.model.TipologiaOmbrellone;
 import it.unicam.cs.PAWNProjectBackend.service.DBMSController;
 import it.unicam.cs.PAWNProjectBackend.service.HandlerSpiaggia;
 import lombok.RequiredArgsConstructor;
@@ -24,17 +25,6 @@ public class AdministrationController {
 
     private final DBMSController dbmsController;
     private final HandlerSpiaggia handlerSpiaggia;
-
-    /**
-     * Ottieni la vista della spiaggia dal db
-     * @return la vista della spiaggia
-     */
-    @GetMapping("/spiaggia/vista")
-    public ResponseEntity<Spiaggia> getSpiaggia(){
-        Spiaggia spiaggia = this.dbmsController.getSpiaggia();
-        if (spiaggia == null) return ResponseEntity.notFound().build();
-        return ResponseEntity.ok(spiaggia);
-    }
 
 
     /**
@@ -59,12 +49,14 @@ public class AdministrationController {
      */
     @PostMapping("/spiaggia/aggiungiOmbrellone")
     public ResponseEntity<Spiaggia> aggiungiOmbrellone(@RequestBody Map<String,Object> body){
-        String nomeTipo = (String) body.get("nomeTipo");
+        Long idTipo = Long.parseLong((String) body.get("idTipologia"));
+        log.info("Tipologia : {}", idTipo);
+        TipologiaOmbrellone tipologia = this.dbmsController.getTipologiaOmbrelloneFromId(idTipo);
         Coordinate coordinate = new Coordinate(Integer.parseInt((String) body.get("x")),Integer.parseInt((String) body.get("y")));
-        log.info("nome tipo : {}", nomeTipo);
-        log.info("coordinate : {}", coordinate);
+        log.info("Tipologia : {}", tipologia);
+        log.info("Coordinate : {}", coordinate);
 
-        this.handlerSpiaggia.aggiungiOmbrellone(nomeTipo,coordinate);
+        this.handlerSpiaggia.aggiungiOmbrellone(tipologia,coordinate);
         return ResponseEntity.ok(this.dbmsController.getSpiaggia());
     }
 
@@ -90,11 +82,19 @@ public class AdministrationController {
         return ResponseEntity.ok(this.dbmsController.getSpiaggia());
     }
 
+    /**
+     * Aggiunge una tipologia ombrellone alla spiaggia
+     * @param body body con i valori della richiesta
+     * @return la nuova tipologia
+     */
+    @PostMapping("/spiaggia/aggiungiTipologiaOmbrellone")
+    public ResponseEntity<TipologiaOmbrellone> aggiungiTipologiaOmbrellone(@RequestBody Map<String,Object> body){
+        String nome = (String) body.get("nome");
+        String descrizione = (String) body.get("descrizione");
 
-
-
-
-
+        TipologiaOmbrellone tipologiaOmbrellone = this.handlerSpiaggia.aggiungiTipologiaOmbrellone(nome,descrizione);
+        return ResponseEntity.ok(tipologiaOmbrellone);
+    }
 
 
 

@@ -5,7 +5,6 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.neo4j.core.schema.RelationshipId;
 import org.springframework.data.neo4j.core.schema.RelationshipProperties;
 import org.springframework.data.neo4j.core.schema.TargetNode;
-/*
 
 @RelationshipProperties
 @Data
@@ -28,4 +27,4 @@ public class ListinoFasciaDiPrezzoRel {
         this.prezzo = prezzo;
     }
 }
-*/
+

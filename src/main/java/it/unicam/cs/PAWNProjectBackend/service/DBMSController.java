@@ -14,8 +14,8 @@ public class DBMSController {
     private final SpiaggiaRepository spiaggiaRepository;
     private final OmbrelloneRepository ombrelloneRepository;
     private final CoordinateRepository coordinateRepository;
-
     private final TipologiaOmbrelloneRepository tipologiaOmbrelloneRepository;
+    private final ListinoRepository listinoRepository;
 
 
     /**
@@ -89,6 +89,22 @@ public class DBMSController {
      */
     public Collection<TipologiaOmbrellone> getListaTipologieOmbrellone() {
         return this.tipologiaOmbrelloneRepository.findAll().stream().toList();
+    }
+
+    /**
+     * Ottieni la lista di tutte le tipologie e dei relativi prezzi
+     * @return la lista delle tipologie e dei relativi prezzi
+     */
+    public Collection<ListinoTipologiaOmbrelloneRel> getTipologieEPrezzo() {
+        return this.listinoRepository.findAll().stream().findFirst().orElseThrow().getPrezziTipologia();
+    }
+
+    /**
+     * Elimina una tipologia ombrellone dal db
+     * @param tipologia la tipologia da eliminare
+     */
+    public void deleteTipologiaOmbrellone(TipologiaOmbrellone tipologia) {
+        this.tipologiaOmbrelloneRepository.delete(tipologia);
     }
 
 

@@ -34,7 +34,23 @@ public class HandlerSpiaggia {
         this.dbmsController.salvaSpiaggia(this.spiaggiaGestita);
     }
 
-     /**
+    /**
+     * Elimina un ombrellone dalla spiaggia dato il suo id
+     * @param id l'id dell'ombrellone
+     */
+    public void deleteOmbrelloneById(Long id) {
+        this.spiaggiaGestita = this.dbmsController.getSpiaggia();
+        Ombrellone ombrellone = this.spiaggiaGestita.getOmbrelloneById(id);
+        log.info("ombrellone eliminato pre: {}", ombrellone);
+        this.spiaggiaGestita.deleteOmbrellone(ombrellone);
+        log.info("ombrellone eliminato post: {}", ombrellone);
+        log.info("totale ombrelloni: {}", this.spiaggiaGestita.getTotaleOmbrelloni());
+        this.dbmsController.salvaOmbrellone(ombrellone);
+        this.dbmsController.salvaSpiaggia(this.spiaggiaGestita);
+    }
+
+
+    /**
      * Questo metodo serve ad aggiungere una griglia alla spiaggia
      * @param griglia la griglia da aggiungere
      */
@@ -113,6 +129,17 @@ public class HandlerSpiaggia {
         log.info("La nuova tipologia creata: {}", nuovaTipologia);
         return nuovaTipologia;
     }
+
+    /**
+     * Questo metodo serve a eliminare una tipologia ombrellone
+     * @param id l'id della tipologia
+     */
+    public void deleteTipologiaOmbrelloneById(Long id) {
+        TipologiaOmbrellone tipologiaOmbrellone = this.dbmsController.getTipologiaOmbrelloneFromId(id);
+        log.info("tipologia ombrellone da eliminare: {}", tipologiaOmbrellone);
+        this.dbmsController.deleteTipologiaOmbrellone(tipologiaOmbrellone);
+    }
+
 
 
 

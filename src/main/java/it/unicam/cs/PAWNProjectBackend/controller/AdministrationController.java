@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/administration")
@@ -41,6 +40,28 @@ public class AdministrationController {
         return ResponseEntity.ok(this.dbmsController.getSpiaggia());
     }
 
+    /**
+     * Modifica la griglia spiaggia
+     * @param body body con i valori della richiesta
+     * @return la nuova spiaggia
+     */
+    @PatchMapping("/spiaggia/modificaGrigliaSpiaggia")
+    public ResponseEntity<Spiaggia> modificaGrigliaSpiaggia(@RequestBody Map<String,Object>  body){
+        ArrayList<Integer> griglia = new ArrayList<>(((Collection<String>) body.get("griglia")).stream().
+                map(Integer::parseInt).toList());
+
+        ArrayList<Long> listaIdOmbrelloni =
+                new ArrayList<>(((Collection<String>) body.get("listaIdPostiConOmbrelloni")).stream().
+                        map(i -> i == null ? -1 : Long.parseLong(i)).toList());
+
+        log.info("griglia: {}", griglia);
+        log.info("listaIdOmbrelloni: {}", listaIdOmbrelloni);
+        log.info("Controllo : {}", listaIdOmbrelloni.get(0) == -1);
+
+        this.handlerSpiaggia.modificaGrigliaSpiaggia(griglia,listaIdOmbrelloni);
+        return ResponseEntity.ok(this.dbmsController.getSpiaggia());
+    }
+
 
     /**
      * Aggiungi un ombrellone alla spiaggia
@@ -60,27 +81,18 @@ public class AdministrationController {
         return ResponseEntity.ok(this.dbmsController.getSpiaggia());
     }
 
+
     /**
-     * Modifica la griglia spiaggia
-     * @param body body con i valori della richiesta
-     * @return la nuova spiaggia
+     * Elimina un ombrellone dalla spiaggia
+     * @param id body con i valori della richiesta
+     * @return la spiaggia modificata
      */
-    @PatchMapping("/spiaggia/modificaGrigliaSpiaggia")
-    public ResponseEntity<Spiaggia> modificaGrigliaSpiaggia(@RequestBody Map<String,Object>  body){
-        ArrayList<Integer> griglia = new ArrayList<>(((Collection<String>) body.get("griglia")).stream().
-                map(Integer::parseInt).toList());
-
-        ArrayList<Long> listaIdOmbrelloni =
-                new ArrayList<>(((Collection<String>) body.get("listaIdPostiConOmbrelloni")).stream().
-                map(i -> i == null ? -1 : Long.parseLong(i)).toList());
-
-        log.info("griglia: {}", griglia);
-        log.info("listaIdOmbrelloni: {}", listaIdOmbrelloni);
-        log.info("Controllo : {}", listaIdOmbrelloni.get(0) == -1);
-
-        this.handlerSpiaggia.modificaGrigliaSpiaggia(griglia,listaIdOmbrelloni);
+    @DeleteMapping("/spiaggia/deleteOmbrellone")
+    public ResponseEntity<Spiaggia> deleteOmbrellone(@RequestParam Long id){
+        this.handlerSpiaggia.deleteOmbrelloneById(id);
         return ResponseEntity.ok(this.dbmsController.getSpiaggia());
     }
+
 
     /**
      * Aggiunge una tipologia ombrellone alla spiaggia
@@ -96,26 +108,20 @@ public class AdministrationController {
         return ResponseEntity.ok(tipologiaOmbrellone);
     }
 
-
-
-
-
-
     /**
-     *
-     * @param body
-     * @return
+     * Elimina una tipologia ombrellone
+     * @param id l'id della tipologia
+     * @return la lista delle tipologie
      */
-    @PostMapping("/spiaggia/modificaOmbrellone")
-    public ResponseEntity<Spiaggia> modificaOmbrellone(Map<String,Object> body){
-
-        Long id = (Long) body.get("id");
-        String nomeTipo = (String) body.get("nomeTipo");
-        Coordinate coordinate = (Coordinate) body.get("coordinate");
-
-        //this.handlerSpiaggia.modificaOmbrellone(id,nomeTipo,coordinate);
-        return ResponseEntity.ok(this.dbmsController.getSpiaggia());
+    @DeleteMapping("/spiaggia/deleteTipologiaOmbrellone")
+    public ResponseEntity<Collection<TipologiaOmbrellone>> deleteTipologiaOmbrellone(@RequestParam Long id){
+        this.handlerSpiaggia.deleteTipologiaOmbrelloneById(id);
+        return ResponseEntity.ok(this.dbmsController.getListaTipologieOmbrellone());
     }
+
+
+
+
 
 
 

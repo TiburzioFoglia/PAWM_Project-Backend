@@ -2,12 +2,14 @@ package it.unicam.cs.PAWNProjectBackend.service;
 
 import it.unicam.cs.PAWNProjectBackend.model.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+@Service
 @RequiredArgsConstructor
 public class HandlerPrenotazione {
 

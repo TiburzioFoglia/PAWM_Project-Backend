@@ -5,8 +5,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
-
 
 @Service
 @RequiredArgsConstructor
@@ -15,39 +13,63 @@ public class HandlerListino {
 
     private Listino listinoGestito;
 
-    private final DBMSController associatedDBMS;
+    private final HandlerSpiaggia handlerSpiaggiaAssociato;
+    private final DBMSController dbmsController;
 
-    private HandlerSpiaggia handlerSpiaggiaAssociato;
+    /**
+     * Aggiorna il listino
+     */
+    public void ottieniListinoAggiornato() {
+        this.listinoGestito = this.dbmsController.getListino();
+    }
 
-    /*public void ottieniListinoAggiornato() {
-        this.listinoGestito.setPrezziTipologia(this.associatedDBMS.getTipologieEPrezzo());
-        this.listinoGestito.setPrezziFascia(this.associatedDBMS.ottieniMappaFasce());
-        this.listinoGestito.setPrezzoBaseOmbrellone(this.associatedDBMS.ottieniPrezzoBaseOmbrellone());
-        this.listinoGestito.setPrezzoBaseLettino(this.associatedDBMS.ottieniPrezzoBaseLettino());
-    }*/
+    /**
+     * Questo metodo serve ad aggiungere una tipologia ombrellone
+     * @param nome il nome della nuova tipologia
+     * @param descrizione la descrizione della nuova tipologia
+     * @param prezzo il moltiplicatore del prezzo della tipologia
+     * @return la nuova tipologia
+     */
+    public TipologiaOmbrellone aggiungiTipologiaOmbrellone(String nome, String descrizione, Double prezzo) {
+        this.ottieniListinoAggiornato();
+        TipologiaOmbrellone nuovaTipologia = new TipologiaOmbrellone(nome,descrizione);
+        this.dbmsController.salvaTipologiaOmbrellone(nuovaTipologia);
+        log.info("La nuova tipologia creata: {}", nuovaTipologia);
 
+        ListinoTipologiaOmbrelloneRel rel = new ListinoTipologiaOmbrelloneRel(nuovaTipologia,prezzo);
+        this.listinoGestito.getPrezziTipologia().add(rel);
+        this.dbmsController.salvaListino(this.listinoGestito);
+        log.info("La nuova tipologia creata: {}", nuovaTipologia);
 
-    public void aggiungiFasciaDiPrezzo() {
+        return nuovaTipologia;
+    }
+
+    /**
+     * Questo metodo serve a eliminare una tipologia ombrellone
+     * @param id l'id della tipologia
+     */
+    public void deleteTipologiaOmbrelloneById(Long id) {
+        TipologiaOmbrellone tipologiaOmbrellone = this.dbmsController.getTipologiaOmbrelloneFromId(id);
+        log.info("tipologia ombrellone da eliminare: {}", tipologiaOmbrellone);
+        this.dbmsController.deleteTipologiaOmbrellone(tipologiaOmbrellone);
+    }
+
+    /*public void aggiungiFasciaDiPrezzo() {
 
     }
 
 
 
-    /**
+    *//**
      * Questo metodo serve a modificare una fascia di prezzo esistente
-     */
+     *//*
     public void modificaFasciaDiPrezzo() {
 
     }
 
 
-    /*private void modificaLocazione(FasciaDiPrezzo fasciaDaModificare, ArrayList<ArrayList<Ombrellone>> listaOmbrelloni) {
-        this.outputVistaSpiaggiaFasce(this.vistaSpiaggiaFasce(listaOmbrelloni));
-
-    }*/
-
     private void eliminaFascia(FasciaDiPrezzo fasciaDaModificare) {
 
-    }
+    }*/
 
 }

@@ -13,7 +13,6 @@ import java.util.HashMap;
 
 
 @Data
-@NoArgsConstructor
 @Node
 public class Listino {
 
@@ -30,7 +29,12 @@ public class Listino {
     private double prezzoBaseOmbrellone;
     private double prezzoBaseLettino;
 
-
+    public Listino() {
+        this.prezzoBaseOmbrellone = 0.0;
+        this.prezzoBaseLettino = 0.0;
+        this.prezziTipologia = new ArrayList<>();
+        this.prezziFascia = new ArrayList<>();
+    }
 
 
 

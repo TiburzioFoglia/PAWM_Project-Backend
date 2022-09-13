@@ -1,5 +1,6 @@
 package it.unicam.cs.PAWNProjectBackend.controller;
 
+import it.unicam.cs.PAWNProjectBackend.model.Listino;
 import it.unicam.cs.PAWNProjectBackend.model.Spiaggia;
 import it.unicam.cs.PAWNProjectBackend.model.TipologiaOmbrellone;
 import it.unicam.cs.PAWNProjectBackend.service.DBMSController;
@@ -34,10 +35,17 @@ public class DefaultController {
      * Ottieni la lista di tutte le tipologie ombrellone dal db
      * @return la lista delle tipologie ombrellone
      */
-    @GetMapping("/spiaggia/listaTipologieOmbrellone")
+    @GetMapping("/spiaggia/listaTipologieOmbrellone") //TODO controllare
     public ResponseEntity<Collection<TipologiaOmbrellone>> getListaTipologieOmbrellone(){
         Collection<TipologiaOmbrellone> tipologie = this.dbmsController.getListaTipologieOmbrellone();
         if (tipologie == null) return ResponseEntity.notFound().build();
         return ResponseEntity.ok(tipologie);
+    }
+
+    @GetMapping("/listino/vista")
+    public ResponseEntity<Listino> getListino(){
+        Listino listino = this.dbmsController.getListino();
+        if (listino == null) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(listino);
     }
 }

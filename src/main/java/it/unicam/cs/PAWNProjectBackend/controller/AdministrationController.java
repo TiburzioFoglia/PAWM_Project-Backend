@@ -5,6 +5,7 @@ import it.unicam.cs.PAWNProjectBackend.model.Coordinate;
 import it.unicam.cs.PAWNProjectBackend.model.Spiaggia;
 import it.unicam.cs.PAWNProjectBackend.model.TipologiaOmbrellone;
 import it.unicam.cs.PAWNProjectBackend.service.DBMSController;
+import it.unicam.cs.PAWNProjectBackend.service.HandlerListino;
 import it.unicam.cs.PAWNProjectBackend.service.HandlerSpiaggia;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +25,7 @@ public class AdministrationController {
 
     private final DBMSController dbmsController;
     private final HandlerSpiaggia handlerSpiaggia;
+    private final HandlerListino handlerListino;
 
 
     /**
@@ -99,12 +101,13 @@ public class AdministrationController {
      * @param body body con i valori della richiesta
      * @return la nuova tipologia
      */
-    @PostMapping("/spiaggia/aggiungiTipologiaOmbrellone")
+    @PostMapping("/listino/aggiungiTipologiaOmbrellone")
     public ResponseEntity<TipologiaOmbrellone> aggiungiTipologiaOmbrellone(@RequestBody Map<String,Object> body){
         String nome = (String) body.get("nome");
         String descrizione = (String) body.get("descrizione");
+        Double prezzo = Double.parseDouble((String) body.get("prezzo"));
 
-        TipologiaOmbrellone tipologiaOmbrellone = this.handlerSpiaggia.aggiungiTipologiaOmbrellone(nome,descrizione);
+        TipologiaOmbrellone tipologiaOmbrellone = this.handlerListino.aggiungiTipologiaOmbrellone(nome,descrizione,prezzo);
         return ResponseEntity.ok(tipologiaOmbrellone);
     }
 
@@ -113,9 +116,9 @@ public class AdministrationController {
      * @param id l'id della tipologia
      * @return la lista delle tipologie
      */
-    @DeleteMapping("/spiaggia/deleteTipologiaOmbrellone")
+    @DeleteMapping("/listino/deleteTipologiaOmbrellone")
     public ResponseEntity<Collection<TipologiaOmbrellone>> deleteTipologiaOmbrellone(@RequestParam Long id){
-        this.handlerSpiaggia.deleteTipologiaOmbrelloneById(id);
+        this.handlerListino.deleteTipologiaOmbrelloneById(id);
         return ResponseEntity.ok(this.dbmsController.getListaTipologieOmbrellone());
     }
 

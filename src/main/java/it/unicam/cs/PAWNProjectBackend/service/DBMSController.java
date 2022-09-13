@@ -5,7 +5,6 @@ import it.unicam.cs.PAWNProjectBackend.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 @Service
@@ -105,6 +104,22 @@ public class DBMSController {
      */
     public void deleteTipologiaOmbrellone(TipologiaOmbrellone tipologia) {
         this.tipologiaOmbrelloneRepository.delete(tipologia);
+    }
+
+    /**
+     * Salva il listino nel db
+     * @param listinoGestito il listino da salvare
+     */
+    public void salvaListino(Listino listinoGestito) {
+        this.listinoRepository.save(listinoGestito);
+    }
+
+    /**
+     * Ottieni il listino dal db
+     * @return il listino
+     */
+    public Listino getListino() {
+        return this.listinoRepository.findAll().stream().findFirst().orElseThrow();
     }
 
 

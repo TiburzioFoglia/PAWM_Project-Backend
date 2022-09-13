@@ -117,28 +117,6 @@ public class HandlerSpiaggia {
         }
     }
 
-    /**
-     * Questo metodo serve ad aggiungere una tipologia ombrellone
-     * @param nome il nome della nuova tipologia
-     * @param descrizione la descrizione della nuova tipologia
-     * @return la nuova tipologia
-     */
-    public TipologiaOmbrellone aggiungiTipologiaOmbrellone(String nome, String descrizione) {
-        TipologiaOmbrellone nuovaTipologia = new TipologiaOmbrellone(nome,descrizione);
-        this.dbmsController.salvaTipologiaOmbrellone(nuovaTipologia);
-        log.info("La nuova tipologia creata: {}", nuovaTipologia);
-        return nuovaTipologia;
-    }
-
-    /**
-     * Questo metodo serve a eliminare una tipologia ombrellone
-     * @param id l'id della tipologia
-     */
-    public void deleteTipologiaOmbrelloneById(Long id) {
-        TipologiaOmbrellone tipologiaOmbrellone = this.dbmsController.getTipologiaOmbrelloneFromId(id);
-        log.info("tipologia ombrellone da eliminare: {}", tipologiaOmbrellone);
-        this.dbmsController.deleteTipologiaOmbrellone(tipologiaOmbrellone);
-    }
 
 
 

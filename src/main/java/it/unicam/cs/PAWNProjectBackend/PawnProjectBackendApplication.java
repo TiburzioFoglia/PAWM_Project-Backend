@@ -8,7 +8,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 
 @SpringBootApplication
 @Slf4j
@@ -23,24 +26,46 @@ public class PawnProjectBackendApplication {
 	CommandLineRunner initDatabase(CoordinateRepository coordinateRepository, OmbrelloneRepository ombrelloneRepository,
 								   SpiaggiaRepository spiaggiaRepository,
 								   TipologiaOmbrelloneRepository tipologiaOmbrelloneRepository,
-								   ListinoRepository listinoRepository){
+								   ListinoRepository listinoRepository, UserRepository userRepository,
+								   RoleRepository roleRepository){
 		return args -> {
 			coordinateRepository.deleteAll();
 			ombrelloneRepository.deleteAll();
 			spiaggiaRepository.deleteAll();
 			tipologiaOmbrelloneRepository.deleteAll();
 			listinoRepository.deleteAll();
+			roleRepository.deleteAll();
+			userRepository.deleteAll();
 
 			TipologiaOmbrellone tipologiaOmbrellone = new TipologiaOmbrellone("Normale","un normale ombrellone");
-			log.info("Creata la tipologia ombrellone : {}",tipologiaOmbrellone);
 			tipologiaOmbrelloneRepository.save(tipologiaOmbrellone);
 			log.info("Salvata la tipologia ombrellone : {}",tipologiaOmbrellone);
 			Listino listino =  new Listino();
 			listino.setPrezzoBaseLettino(5.0);
+			log.info("Prezzo base lettino : {}",listino.getPrezzoBaseLettino());
 			listino.setPrezzoBaseOmbrellone(2.0);
+			log.info("Prezzo base ombrellone : {}",listino.getPrezzoBaseOmbrellone());
 			ListinoTipologiaOmbrelloneRel rel = new ListinoTipologiaOmbrelloneRel(tipologiaOmbrellone,1.0);
 			listino.getPrezziTipologia().add(rel);
 			listinoRepository.save(listino);
+
+			Role admin = new Role("Admin","Administrator of the application");
+			log.info("Nuovo ruolo : {}",admin);
+			roleRepository.save(admin);
+			Role user = new Role("User","Generic user of the application");
+			log.info("Nuovo ruolo : {}",user);
+			roleRepository.save(user);
+
+			Collection<Role> ruoli = new ArrayList<>();
+			ruoli.add(admin);
+			User adminUser = new User("admin","Mario","Rossi","asdf", ruoli);
+			userRepository.save(adminUser);
+			ruoli = new ArrayList<>();
+			ruoli.add(user);
+			User genericUser = new User("genericUser","Giorgio","Grigio","asdf", ruoli);
+			userRepository.save(genericUser);
+
+
 
 		};
 	}

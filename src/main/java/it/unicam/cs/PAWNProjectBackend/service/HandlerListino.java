@@ -12,8 +12,6 @@ import org.springframework.stereotype.Service;
 public class HandlerListino {
 
     private Listino listinoGestito;
-
-    private final HandlerSpiaggia handlerSpiaggiaAssociato;
     private final DBMSController dbmsController;
 
     /**
@@ -54,22 +52,26 @@ public class HandlerListino {
         this.dbmsController.deleteTipologiaOmbrellone(tipologiaOmbrellone);
     }
 
-    /*public void aggiungiFasciaDiPrezzo() {
+    /**
+     *
+     */
+    public void aggiungiFasciaDiPrezzo() {
 
     }
 
-
-
-    *//**
+    /**
      * Questo metodo serve a modificare una fascia di prezzo esistente
-     *//*
+     */
     public void modificaFasciaDiPrezzo() {
 
     }
 
-
+    /**
+     *
+     * @param fasciaDaModificare
+     */
     private void eliminaFascia(FasciaDiPrezzo fasciaDaModificare) {
 
-    }*/
+    }
 
 }

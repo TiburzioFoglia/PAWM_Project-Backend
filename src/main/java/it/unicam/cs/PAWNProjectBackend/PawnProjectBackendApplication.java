@@ -3,19 +3,22 @@ package it.unicam.cs.PAWNProjectBackend;
 import it.unicam.cs.PAWNProjectBackend.model.*;
 import it.unicam.cs.PAWNProjectBackend.repository.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 
 @SpringBootApplication
 @Slf4j
 public class PawnProjectBackendApplication {
+
+	@Autowired
+	PasswordEncoder passwordEncoder;
 
 	public static void main(String[] args) {
 		SpringApplication.run(PawnProjectBackendApplication.class, args);
@@ -28,6 +31,8 @@ public class PawnProjectBackendApplication {
 								   TipologiaOmbrelloneRepository tipologiaOmbrelloneRepository,
 								   ListinoRepository listinoRepository, UserRepository userRepository,
 								   RoleRepository roleRepository){
+
+
 		return args -> {
 			coordinateRepository.deleteAll();
 			ombrelloneRepository.deleteAll();
@@ -50,23 +55,29 @@ public class PawnProjectBackendApplication {
 			listinoRepository.save(listino);
 
 			Role admin = new Role("Admin","Administrator of the application");
-			log.info("Nuovo ruolo : {}",admin);
 			roleRepository.save(admin);
+			log.info("Nuovo ruolo : {}",admin);
 			Role user = new Role("User","Generic user of the application");
-			log.info("Nuovo ruolo : {}",user);
 			roleRepository.save(user);
+			log.info("Nuovo ruolo : {}",user);
+
 
 			Collection<Role> ruoli = new ArrayList<>();
 			ruoli.add(admin);
-			User adminUser = new User("admin","Mario","Rossi","asdf", ruoli);
+			User adminUser = new User("admin","Mario","Rossi",getEncodedPassword("marioPass"), ruoli);
 			userRepository.save(adminUser);
+			log.info("Nuovo user : {}",adminUser);
 			ruoli = new ArrayList<>();
 			ruoli.add(user);
-			User genericUser = new User("genericUser","Giorgio","Grigio","asdf", ruoli);
+			User genericUser = new User("genericUser","Giorgio","Grigio",getEncodedPassword("giorgioPass"), ruoli);
 			userRepository.save(genericUser);
-
-
+			log.info("Nuovo user : {}",genericUser);
 
 		};
+
+	}
+
+	public String getEncodedPassword(String password){
+		return passwordEncoder.encode(password);
 	}
 }

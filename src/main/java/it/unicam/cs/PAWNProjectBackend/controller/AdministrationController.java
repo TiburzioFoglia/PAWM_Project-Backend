@@ -18,7 +18,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/administration")
-@CrossOrigin(origins = "*")
+@CrossOrigin
 @Slf4j
 @RequiredArgsConstructor
 public class AdministrationController {

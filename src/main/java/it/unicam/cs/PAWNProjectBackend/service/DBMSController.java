@@ -5,6 +5,7 @@ import it.unicam.cs.PAWNProjectBackend.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 
@@ -145,13 +146,18 @@ public class DBMSController {
                 .toList();
     }
 
-
     /**
-     * Ottieni il listino prezzi dal db
-     * @return il listino prezzi
-     *//*
-    public Listino ottieniListino() {
-        return this.listinoRepository.findAll().stream().findFirst().orElseThrow();
-    }*/
+     * Ottieni la lista delle tipologie non utilizzate da nessun ombrellone
+     * @return la lista delle tipologie o null se è vuota
+     */
+    public Collection<TipologiaOmbrellone> getListaTipologieOmbrelloneNonUtilizzate() {
+        ArrayList<Ombrellone> listaOmbrelloni = this.getSpiaggia().getListaOmbrelloni();
+        Collection<String> tipologieUtilizzate = listaOmbrelloni.stream()
+                .filter(o -> o.getTipologia() != null)
+                .map(o -> o.getTipologia().getNome()).distinct().toList();
+        return this.tipologiaOmbrelloneRepository.findAll().stream()
+                .filter(tipologiaOmbrellone -> tipologieUtilizzate.stream()
+                        .noneMatch(t -> t.equals(tipologiaOmbrellone.getNome()))).toList();
+    }
 
 }

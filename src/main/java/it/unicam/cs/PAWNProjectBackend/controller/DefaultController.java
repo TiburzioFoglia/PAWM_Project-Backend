@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
@@ -56,12 +57,27 @@ public class DefaultController {
      * Ottieni la lista di tutte le tipologie ombrellone dal db
      * @return la lista delle tipologie ombrellone
      */
-    @GetMapping("/spiaggia/listaTipologieOmbrelloneConPrezzo")
+    @GetMapping("/listino/listaTipologieOmbrelloneConPrezzo")
     @PreAuthorize("hasRole('Admin')")
     public ResponseEntity<Collection<ListinoTipologiaOmbrelloneRel>> getListaTipologieOmbrelloneConPrezzo(){
         Listino listino = this.handlerListino.getListinoGestito();
         if (listino == null || listino.getPrezziTipologia() == null) return ResponseEntity.notFound().build();
         return ResponseEntity.ok(listino.getPrezziTipologia());
+    }
+
+
+
+    /**
+     * Ottieni la lista di tutte le tipologie ombrellone dal db che non sono state utilizzate da nessun ombrellone
+     * @return la lista delle tipologie ombrellone
+     */
+    @GetMapping("/spiaggia/listaTipologieOmbrelloneNonUtilizzate")
+    @PreAuthorize("hasRole('Admin')")
+    public ResponseEntity<Collection<TipologiaOmbrellone>> getListaTipologieOmbrelloneNonUtilizzate(){
+        Collection<TipologiaOmbrellone> tipologie = this.dbmsController.getListaTipologieOmbrelloneNonUtilizzate();
+        System.out.println(tipologie);
+        if (tipologie == null) return ResponseEntity.ok(new ArrayList<>());
+        return ResponseEntity.ok(tipologie);
     }
 
     @GetMapping("/listino/vista")

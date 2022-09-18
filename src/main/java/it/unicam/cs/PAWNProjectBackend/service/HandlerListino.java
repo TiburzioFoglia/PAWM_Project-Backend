@@ -40,7 +40,6 @@ public class HandlerListino {
         this.aggiornaListino();
         TipologiaOmbrellone nuovaTipologia = new TipologiaOmbrellone(nome,descrizione);
         this.dbmsController.salvaTipologiaOmbrellone(nuovaTipologia);
-        log.info("La nuova tipologia creata: {}", nuovaTipologia);
 
         ListinoTipologiaOmbrelloneRel rel = new ListinoTipologiaOmbrelloneRel(nuovaTipologia,prezzo);
         this.listinoGestito.getPrezziTipologia().add(rel);

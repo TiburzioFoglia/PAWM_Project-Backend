@@ -19,9 +19,9 @@ C:\Users\simon\Documents\GitHub\PAWM_Project-Backend\src\main\java\it\unicam\cs\
 C:\Users\simon\Documents\GitHub\PAWM_Project-Backend\src\main\java\it\unicam\cs\PAWNProjectBackend\model\FasciaDiPrezzo.java
 C:\Users\simon\Documents\GitHub\PAWM_Project-Backend\src\main\java\it\unicam\cs\PAWNProjectBackend\repository\CoordinateRepository.java
 C:\Users\simon\Documents\GitHub\PAWM_Project-Backend\src\main\java\it\unicam\cs\PAWNProjectBackend\controller\AdministrationController.java
-C:\Users\simon\Documents\GitHub\PAWM_Project-Backend\src\main\java\it\unicam\cs\PAWNProjectBackend\model\PrenotazioneDateFasciaOrariaOmbrelloneRel.java
 C:\Users\simon\Documents\GitHub\PAWM_Project-Backend\src\main\java\it\unicam\cs\PAWNProjectBackend\repository\TipologiaOmbrelloneRepository.java
 C:\Users\simon\Documents\GitHub\PAWM_Project-Backend\src\main\java\it\unicam\cs\PAWNProjectBackend\util\JwtUtil.java
+C:\Users\simon\Documents\GitHub\PAWM_Project-Backend\src\main\java\it\unicam\cs\PAWNProjectBackend\controller\GenericUserController.java
 C:\Users\simon\Documents\GitHub\PAWM_Project-Backend\src\main\java\it\unicam\cs\PAWNProjectBackend\configuration\WebSecurityConfiguration.java
 C:\Users\simon\Documents\GitHub\PAWM_Project-Backend\src\main\java\it\unicam\cs\PAWNProjectBackend\model\Coordinate.java
 C:\Users\simon\Documents\GitHub\PAWM_Project-Backend\src\main\java\it\unicam\cs\PAWNProjectBackend\repository\FasciaDiPrezzoRepository.java

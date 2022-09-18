@@ -80,7 +80,6 @@ public class AdministrationController {
         TipologiaOmbrellone tipologia = this.dbmsController.getTipologiaOmbrelloneFromId(idTipo);
         Ombrellone ombrellone = this.dbmsController.getSpiaggia().getOmbrelloneById(idPosto);
         Coordinate coordinate = ombrellone.getLocation();
-        //Coordinate coordinate = new Coordinate(Integer.parseInt((String) body.get("x")),Integer.parseInt((String) body.get("y")));
         log.info("Tipologia : {}", tipologia);
         log.info("Coordinate : {}", coordinate);
 
@@ -107,6 +106,7 @@ public class AdministrationController {
      * @return la nuova tipologia
      */
     @PostMapping("/listino/aggiungiTipologiaOmbrellone")
+    @PreAuthorize("hasRole('Admin')")
     public ResponseEntity<TipologiaOmbrellone> aggiungiTipologiaOmbrellone(@RequestBody Map<String,Object> body){
         String nome = (String) body.get("nome");
         String descrizione = (String) body.get("descrizione");
@@ -122,6 +122,7 @@ public class AdministrationController {
      * @return la lista delle tipologie
      */
     @DeleteMapping("/listino/deleteTipologiaOmbrellone")
+    @PreAuthorize("hasRole('Admin')")
     public ResponseEntity<Collection<TipologiaOmbrellone>> deleteTipologiaOmbrellone(@RequestParam Long id){
         this.handlerListino.deleteTipologiaOmbrelloneById(id);
         return ResponseEntity.ok(this.dbmsController.getListaTipologieOmbrellone());

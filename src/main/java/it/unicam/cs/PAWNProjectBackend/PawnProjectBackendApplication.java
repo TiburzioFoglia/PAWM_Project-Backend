@@ -35,20 +35,20 @@ public class PawnProjectBackendApplication {
 
 
 		return args -> {
-			coordinateRepository.deleteAll();
-			ombrelloneRepository.deleteAll();
-			spiaggiaRepository.deleteAll();
-			tipologiaOmbrelloneRepository.deleteAll();
-			listinoRepository.deleteAll();
+			//coordinateRepository.deleteAll();
+			//ombrelloneRepository.deleteAll();
+			//spiaggiaRepository.deleteAll();
+			//tipologiaOmbrelloneRepository.deleteAll();
+			//listinoRepository.deleteAll();
 			roleRepository.deleteAll();
 			userRepository.deleteAll();
 
 			ArrayList<Integer> griglia = new ArrayList<>();
 			for(int i=0;i<6;i++) griglia.add(10);
 
-			handlerSpiaggia.aggiungiGrigliaSpiaggia(griglia);
+			//handlerSpiaggia.aggiungiGrigliaSpiaggia(griglia);
 
-			TipologiaOmbrellone tipologiaOmbrellone = new TipologiaOmbrellone("Normale","un normale ombrellone");
+			/*TipologiaOmbrellone tipologiaOmbrellone = new TipologiaOmbrellone("Normale","un normale ombrellone");
 			tipologiaOmbrelloneRepository.save(tipologiaOmbrellone);
 			log.info("Salvata la tipologia ombrellone : {}",tipologiaOmbrellone);
 			Listino listino =  new Listino();
@@ -58,7 +58,7 @@ public class PawnProjectBackendApplication {
 			log.info("Prezzo base ombrellone : {}",listino.getPrezzoBaseOmbrellone());
 			ListinoTipologiaOmbrelloneRel rel = new ListinoTipologiaOmbrelloneRel(tipologiaOmbrellone,1.0);
 			listino.getPrezziTipologia().add(rel);
-			listinoRepository.save(listino);
+			listinoRepository.save(listino);*/
 
 			Role admin = new Role("Admin","Administrator of the application");
 			roleRepository.save(admin);

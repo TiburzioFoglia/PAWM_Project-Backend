@@ -50,7 +50,7 @@ public class Spiaggia {
      * @return l'ombrellone
      */
     public Ombrellone getOmbrelloneById(Long id) {
-        return this.listaOmbrelloni.stream().filter(a -> a.getId().equals(id)).findFirst().orElseThrow();
+        return this.listaOmbrelloni.stream().filter(a -> a.getId().equals(id)).findFirst().orElse(null);
     }
 
     /**

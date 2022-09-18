@@ -160,4 +160,8 @@ public class DBMSController {
                         .noneMatch(t -> t.equals(tipologiaOmbrellone.getNome()))).toList();
     }
 
+    public Collection<Ombrellone> getOmbrelloniConPrenotazione() {
+        Collection<Prenotazione> prenotazioni = this.prenotazioneRepository.findAll();
+        return prenotazioni.stream().map(Prenotazione::getOmbrellone).distinct().toList();
+    }
 }

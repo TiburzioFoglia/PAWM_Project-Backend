@@ -94,6 +94,7 @@ public class AdministrationController {
      * @return la spiaggia modificata
      */
     @DeleteMapping("/spiaggia/deleteOmbrellone")
+    @PreAuthorize("hasRole('Admin')")
     public ResponseEntity<Spiaggia> deleteOmbrellone(@RequestParam Long id){
         this.handlerSpiaggia.deleteOmbrelloneById(id);
         return ResponseEntity.ok(this.dbmsController.getSpiaggia());

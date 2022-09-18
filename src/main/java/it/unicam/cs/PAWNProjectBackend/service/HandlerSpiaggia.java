@@ -6,11 +6,13 @@ import it.unicam.cs.PAWNProjectBackend.model.Coordinate;
 import it.unicam.cs.PAWNProjectBackend.model.Ombrellone;
 import it.unicam.cs.PAWNProjectBackend.model.Spiaggia;
 import it.unicam.cs.PAWNProjectBackend.model.TipologiaOmbrellone;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
+@Data
 @RequiredArgsConstructor
 @Slf4j
 public class HandlerSpiaggia {

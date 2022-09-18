@@ -31,34 +31,49 @@ public class PawnProjectBackendApplication {
 								   SpiaggiaRepository spiaggiaRepository,
 								   TipologiaOmbrelloneRepository tipologiaOmbrelloneRepository,
 								   ListinoRepository listinoRepository, UserRepository userRepository,
-								   RoleRepository roleRepository, HandlerSpiaggia handlerSpiaggia){
+								   RoleRepository roleRepository, HandlerSpiaggia handlerSpiaggia,
+								   FasciaDiPrezzoRepository fasciaDiPrezzoRepository){
 
 
 		return args -> {
-			//coordinateRepository.deleteAll();
-			//ombrelloneRepository.deleteAll();
-			//spiaggiaRepository.deleteAll();
-			//tipologiaOmbrelloneRepository.deleteAll();
-			//listinoRepository.deleteAll();
+			/*coordinateRepository.deleteAll();
+			ombrelloneRepository.deleteAll();
+			spiaggiaRepository.deleteAll();
+			tipologiaOmbrelloneRepository.deleteAll();
+			listinoRepository.deleteAll();
 			roleRepository.deleteAll();
 			userRepository.deleteAll();
+			fasciaDiPrezzoRepository.deleteAll();
 
 			ArrayList<Integer> griglia = new ArrayList<>();
 			for(int i=0;i<6;i++) griglia.add(10);
+			handlerSpiaggia.aggiungiGrigliaSpiaggia(griglia);
 
-			//handlerSpiaggia.aggiungiGrigliaSpiaggia(griglia);
 
-			/*TipologiaOmbrellone tipologiaOmbrellone = new TipologiaOmbrellone("Normale","un normale ombrellone");
-			tipologiaOmbrelloneRepository.save(tipologiaOmbrellone);
-			log.info("Salvata la tipologia ombrellone : {}",tipologiaOmbrellone);
 			Listino listino =  new Listino();
 			listino.setPrezzoBaseLettino(5.0);
-			log.info("Prezzo base lettino : {}",listino.getPrezzoBaseLettino());
 			listino.setPrezzoBaseOmbrellone(2.0);
-			log.info("Prezzo base ombrellone : {}",listino.getPrezzoBaseOmbrellone());
+
+			TipologiaOmbrellone tipologiaOmbrellone = new TipologiaOmbrellone("Normale","un normale ombrellone");
+			tipologiaOmbrelloneRepository.save(tipologiaOmbrellone);
+
 			ListinoTipologiaOmbrelloneRel rel = new ListinoTipologiaOmbrelloneRel(tipologiaOmbrellone,1.0);
 			listino.getPrezziTipologia().add(rel);
-			listinoRepository.save(listino);*/
+			listinoRepository.save(listino);
+
+			String[] nomiFascia = {"Fascia1","Fascia2","Fascia3","Fascia4","Fascia5","Fascia6"};
+
+			for(int i=0;i<6;i++) {
+				FasciaDiPrezzo fascia = new FasciaDiPrezzo(nomiFascia[i]);
+				fascia.getRigheComprese().add(i);
+				fasciaDiPrezzoRepository.save(fascia);
+				listino.getPrezziFascia().add(new ListinoFasciaDiPrezzoRel(fascia,6.0-i));
+			}
+			listinoRepository.save(listino);
+
+
+
+
 
 			Role admin = new Role("Admin","Administrator of the application");
 			roleRepository.save(admin);
@@ -70,15 +85,15 @@ public class PawnProjectBackendApplication {
 
 			Collection<Role> ruoli = new ArrayList<>();
 			ruoli.add(admin);
-			User adminUser = new User("admin","Mario","Rossi",getEncodedPassword("marioPass"), ruoli);
+			User adminUser = new User("admin","Mario","Rossi",getEncodedPassword("adminPass"), ruoli);
 			userRepository.save(adminUser);
 			log.info("Nuovo user : {}",adminUser);
 			ruoli = new ArrayList<>();
 			ruoli.add(user);
-			User genericUser = new User("genericUser","Giorgio","Grigio",getEncodedPassword("giorgioPass"), ruoli);
+			User genericUser = new User("genericUser","Giorgio","Grigio",getEncodedPassword("userPass"), ruoli);
 			userRepository.save(genericUser);
 			log.info("Nuovo user : {}",genericUser);
-
+*/
 		};
 
 	}

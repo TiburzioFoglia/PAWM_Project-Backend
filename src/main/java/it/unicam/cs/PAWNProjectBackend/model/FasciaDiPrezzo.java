@@ -23,8 +23,15 @@ public class FasciaDiPrezzo {
 
     private Collection<Integer> righeComprese = new ArrayList<>();
 
+    public FasciaDiPrezzo(String nome) {
+        this.nome = nome;
+        this.righeComprese = new ArrayList<>();
+    }
+
     public FasciaDiPrezzo(String nome, Collection<Integer> righe){
         this.nome = nome;
         this.righeComprese = righe;
     }
+
+
 }

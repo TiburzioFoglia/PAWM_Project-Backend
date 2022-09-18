@@ -1,9 +1,6 @@
 package it.unicam.cs.PAWNProjectBackend.controller;
 
-import it.unicam.cs.PAWNProjectBackend.model.Listino;
-import it.unicam.cs.PAWNProjectBackend.model.ListinoTipologiaOmbrelloneRel;
-import it.unicam.cs.PAWNProjectBackend.model.Spiaggia;
-import it.unicam.cs.PAWNProjectBackend.model.TipologiaOmbrellone;
+import it.unicam.cs.PAWNProjectBackend.model.*;
 import it.unicam.cs.PAWNProjectBackend.service.DBMSController;
 import it.unicam.cs.PAWNProjectBackend.service.HandlerListino;
 import it.unicam.cs.PAWNProjectBackend.service.HandlerPrenotazione;
@@ -75,16 +72,29 @@ public class DefaultController {
     @PreAuthorize("hasRole('Admin')")
     public ResponseEntity<Collection<TipologiaOmbrellone>> getListaTipologieOmbrelloneNonUtilizzate(){
         Collection<TipologiaOmbrellone> tipologie = this.dbmsController.getListaTipologieOmbrelloneNonUtilizzate();
-        System.out.println(tipologie);
         if (tipologie == null) return ResponseEntity.ok(new ArrayList<>());
         return ResponseEntity.ok(tipologie);
     }
 
+    /**
+     *
+     * @return
+     */
     @GetMapping("/listino/vista")
     public ResponseEntity<Listino> getListino(){
         Listino listino = this.dbmsController.getListino();
         if (listino == null) return ResponseEntity.notFound().build();
         return ResponseEntity.ok(listino);
+    }
+
+    /**
+     *
+     * @return
+     */
+    @GetMapping("/spiaggia/listaOmbrelloniConPrenotazione")
+    @PreAuthorize("hasRole('Admin')")
+    public ResponseEntity<Collection<Ombrellone>> getOmbrelloniConPrenotazione(){
+        return ResponseEntity.ok(this.dbmsController.getOmbrelloniConPrenotazione());
     }
 
     /**

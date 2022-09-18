@@ -2,6 +2,7 @@ package it.unicam.cs.PAWNProjectBackend.controller;
 
 
 import it.unicam.cs.PAWNProjectBackend.model.Coordinate;
+import it.unicam.cs.PAWNProjectBackend.model.Ombrellone;
 import it.unicam.cs.PAWNProjectBackend.model.Spiaggia;
 import it.unicam.cs.PAWNProjectBackend.model.TipologiaOmbrellone;
 import it.unicam.cs.PAWNProjectBackend.service.DBMSController;
@@ -10,6 +11,7 @@ import it.unicam.cs.PAWNProjectBackend.service.HandlerSpiaggia;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -47,7 +49,7 @@ public class AdministrationController {
      * @param body body con i valori della richiesta
      * @return la nuova spiaggia
      */
-    @PatchMapping("/spiaggia/modificaGrigliaSpiaggia")
+    @PutMapping("/spiaggia/modificaGrigliaSpiaggia")
     public ResponseEntity<Spiaggia> modificaGrigliaSpiaggia(@RequestBody Map<String,Object>  body){
         ArrayList<Integer> griglia = new ArrayList<>(((Collection<String>) body.get("griglia")).stream().
                 map(Integer::parseInt).toList());
@@ -67,15 +69,18 @@ public class AdministrationController {
 
     /**
      * Aggiungi un ombrellone alla spiaggia
-     * @param body body con i valori della richiesta
+     * @param tipologiaOmbrellone body con i valori della richiesta
      * @return la spiaggia modificata
      */
     @PostMapping("/spiaggia/aggiungiOmbrellone")
-    public ResponseEntity<Spiaggia> aggiungiOmbrellone(@RequestBody Map<String,Object> body){
-        Long idTipo = Long.parseLong((String) body.get("idTipologia"));
-        log.info("Tipologia : {}", idTipo);
+    @PreAuthorize("hasRole('Admin')")
+    public ResponseEntity<Spiaggia> aggiungiOmbrellone(@RequestBody TipologiaOmbrellone tipologiaOmbrellone, @RequestParam Long idPosto){
+        Long idTipo = tipologiaOmbrellone.getId();
+        log.info("Tipologia : {}", tipologiaOmbrellone);
         TipologiaOmbrellone tipologia = this.dbmsController.getTipologiaOmbrelloneFromId(idTipo);
-        Coordinate coordinate = new Coordinate(Integer.parseInt((String) body.get("x")),Integer.parseInt((String) body.get("y")));
+        Ombrellone ombrellone = this.dbmsController.getSpiaggia().getOmbrelloneById(idPosto);
+        Coordinate coordinate = ombrellone.getLocation();
+        //Coordinate coordinate = new Coordinate(Integer.parseInt((String) body.get("x")),Integer.parseInt((String) body.get("y")));
         log.info("Tipologia : {}", tipologia);
         log.info("Coordinate : {}", coordinate);
 

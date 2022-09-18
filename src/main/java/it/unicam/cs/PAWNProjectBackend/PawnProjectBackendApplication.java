@@ -2,6 +2,7 @@ package it.unicam.cs.PAWNProjectBackend;
 
 import it.unicam.cs.PAWNProjectBackend.model.*;
 import it.unicam.cs.PAWNProjectBackend.repository.*;
+import it.unicam.cs.PAWNProjectBackend.service.HandlerSpiaggia;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -30,7 +31,7 @@ public class PawnProjectBackendApplication {
 								   SpiaggiaRepository spiaggiaRepository,
 								   TipologiaOmbrelloneRepository tipologiaOmbrelloneRepository,
 								   ListinoRepository listinoRepository, UserRepository userRepository,
-								   RoleRepository roleRepository){
+								   RoleRepository roleRepository, HandlerSpiaggia handlerSpiaggia){
 
 
 		return args -> {
@@ -41,6 +42,11 @@ public class PawnProjectBackendApplication {
 			listinoRepository.deleteAll();
 			roleRepository.deleteAll();
 			userRepository.deleteAll();
+
+			ArrayList<Integer> griglia = new ArrayList<>();
+			for(int i=0;i<6;i++) griglia.add(10);
+
+			handlerSpiaggia.aggiungiGrigliaSpiaggia(griglia);
 
 			TipologiaOmbrellone tipologiaOmbrellone = new TipologiaOmbrellone("Normale","un normale ombrellone");
 			tipologiaOmbrelloneRepository.save(tipologiaOmbrellone);

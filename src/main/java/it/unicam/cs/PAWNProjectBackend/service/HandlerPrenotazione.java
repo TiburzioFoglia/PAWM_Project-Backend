@@ -1,17 +1,30 @@
 package it.unicam.cs.PAWNProjectBackend.service;
 
-import it.unicam.cs.PAWNProjectBackend.model.*;
+import it.unicam.cs.PAWNProjectBackend.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Collection;
+import java.util.Date;
 
 @Service
 @RequiredArgsConstructor
 public class HandlerPrenotazione {
+
+    private final DBMSController dbmsController;
+
+    public void prenotaOmbrellone() {
+    }
+
+    public Collection<Integer> getOmbrelloniPrenotabili(Date data) {
+
+        return null;
+    }
+
+    public String hasReservations(User user) {
+        if(this.dbmsController.getPrenotazioniUtente(user).isEmpty()) return "false";
+        return "true";
+    }
 
     /*private final HandlerSpiaggia handlerSpiaggiaAssociato;
     private ArrayList<Prenotazione> listaPrenotazioni;

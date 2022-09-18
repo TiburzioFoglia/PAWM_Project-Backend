@@ -14,10 +14,18 @@ public class HandlerListino {
     private Listino listinoGestito;
     private final DBMSController dbmsController;
 
+
+    public Listino getListinoGestito(){
+        this.aggiornaListino();
+        return this.listinoGestito;
+    }
+
+
+
     /**
      * Aggiorna il listino
      */
-    public void ottieniListinoAggiornato() {
+    private void aggiornaListino() {
         this.listinoGestito = this.dbmsController.getListino();
     }
 
@@ -29,7 +37,7 @@ public class HandlerListino {
      * @return la nuova tipologia
      */
     public TipologiaOmbrellone aggiungiTipologiaOmbrellone(String nome, String descrizione, Double prezzo) {
-        this.ottieniListinoAggiornato();
+        this.aggiornaListino();
         TipologiaOmbrellone nuovaTipologia = new TipologiaOmbrellone(nome,descrizione);
         this.dbmsController.salvaTipologiaOmbrellone(nuovaTipologia);
         log.info("La nuova tipologia creata: {}", nuovaTipologia);

@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -15,6 +16,8 @@ public class DBMSController {
     private final CoordinateRepository coordinateRepository;
     private final TipologiaOmbrelloneRepository tipologiaOmbrelloneRepository;
     private final ListinoRepository listinoRepository;
+    private final UserRepository userRepository;
+    private final PrenotazioneRepository prenotazioneRepository;
 
 
     /**
@@ -120,6 +123,26 @@ public class DBMSController {
      */
     public Listino getListino() {
         return this.listinoRepository.findAll().stream().findFirst().orElseThrow();
+    }
+
+    /**
+     *
+     * @param userName
+     * @return
+     */
+    public User getUserByUserName(String userName) {
+        return this.userRepository.findById(userName).stream().findFirst().orElse(null);
+    }
+
+    /**
+     *
+     * @param user
+     * @return
+     */
+    public Collection<Prenotazione> getPrenotazioniUtente(User user){
+        return this.prenotazioneRepository.findAll().stream()
+                .filter(p -> Objects.equals(p.getUser().getUserName(), user.getUserName()))
+                .toList();
     }
 
 

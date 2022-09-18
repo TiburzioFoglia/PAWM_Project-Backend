@@ -21,28 +21,18 @@ public class Prenotazione {
     @Id
     @GeneratedValue
     private Long id;
-    private Date dataInizio;
-    private Date dataFine;
-    private int idCliente; //TODO
+
+    @Relationship(type = "Prenotato_da",direction = Relationship.Direction.OUTGOING)
+    private User user;
+
+    private Date data;
+
+    private Integer numeroLettini;
+
     private double prezzoTotale;
 
-    @Relationship(type = "FASCIA_ORARIA_DATA_ASSOCIATA",direction = Relationship.Direction.OUTGOING)
-    private Collection<PrenotazioneDateFasciaOrariaOmbrelloneRel> mappaDateFasceOmbrelloni;
-
-    public Prenotazione(Date dataInizio, Date dataFine, int idCliente){
-        this.mappaDateFasceOmbrelloni = new ArrayList<>();
-        this.dataInizio = dataInizio;
-        this.dataFine = dataFine;
-        this.idCliente = idCliente;
-    }
-
-    public Prenotazione(Date dataInizio, Date dataFine, int idCliente, double prezzoTotale) {
-        this.dataInizio = dataInizio;
-        this.dataFine = dataFine;
-        this.idCliente = idCliente;
-        this.prezzoTotale = prezzoTotale;
-        this.mappaDateFasceOmbrelloni = new ArrayList<>();
-    }
+    @Relationship(type = "Ombrellone_prenotato",direction = Relationship.Direction.OUTGOING)
+    private Ombrellone ombrellone;
 
 
 }

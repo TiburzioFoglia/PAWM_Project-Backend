@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Objects;
 
 @Service
@@ -163,5 +164,16 @@ public class DBMSController {
     public Collection<Ombrellone> getOmbrelloniConPrenotazione() {
         Collection<Prenotazione> prenotazioni = this.prenotazioneRepository.findAll();
         return prenotazioni.stream().map(Prenotazione::getOmbrellone).distinct().toList();
+    }
+
+    public Collection<Ombrellone> getOmbrelloniPrenotatiInData(Date date) {
+        return this.prenotazioneRepository.findAll().stream()
+                .filter(p -> p.getDataInMillis() == date.getTime())
+                .map(Prenotazione::getOmbrellone)
+                .toList();
+    }
+
+    public void salvaPrenotazione(Prenotazione prenotazione) {
+        this.prenotazioneRepository.save(prenotazione);
     }
 }

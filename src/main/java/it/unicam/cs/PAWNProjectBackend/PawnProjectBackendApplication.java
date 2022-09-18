@@ -32,10 +32,12 @@ public class PawnProjectBackendApplication {
 								   TipologiaOmbrelloneRepository tipologiaOmbrelloneRepository,
 								   ListinoRepository listinoRepository, UserRepository userRepository,
 								   RoleRepository roleRepository, HandlerSpiaggia handlerSpiaggia,
-								   FasciaDiPrezzoRepository fasciaDiPrezzoRepository){
+								   FasciaDiPrezzoRepository fasciaDiPrezzoRepository,
+								   PrenotazioneRepository prenotazioneRepository){
 
 
 		return args -> {
+
 			/*coordinateRepository.deleteAll();
 			ombrelloneRepository.deleteAll();
 			spiaggiaRepository.deleteAll();
@@ -44,6 +46,7 @@ public class PawnProjectBackendApplication {
 			roleRepository.deleteAll();
 			userRepository.deleteAll();
 			fasciaDiPrezzoRepository.deleteAll();
+			prenotazioneRepository.deleteAll();
 
 			ArrayList<Integer> griglia = new ArrayList<>();
 			for(int i=0;i<6;i++) griglia.add(10);

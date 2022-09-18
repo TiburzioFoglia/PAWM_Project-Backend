@@ -10,10 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Map;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @RestController
 @RequestMapping
@@ -99,13 +98,18 @@ public class DefaultController {
 
     /**
      *
-     * @param body
      * @return
      */
-    @GetMapping("/ombrelloniPrenotabiliInData")
-    public ResponseEntity<Collection<Integer>> getOmbrelloniPrenotabiliInData(@RequestBody Map<String,Object> body){
-        Date data = (Date) body.get("date");
-        Collection<Integer> idOmbrelloniPrenotabili = this.handlerPrenotazione.getOmbrelloniPrenotabili(data);
-        return ResponseEntity.ok(idOmbrelloniPrenotabili);
+    @GetMapping("/spiaggia/listaOmbrelloniPrenotatiInData")
+    @PreAuthorize("hasRole('User')")
+    public ResponseEntity<Collection<Ombrellone>> getOmbrelloniPrenotatiInData(@RequestParam String data){
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH);
+        Date date = null;
+        try {
+            date = formatter.parse(data);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+        return ResponseEntity.ok(this.dbmsController.getOmbrelloniPrenotatiInData(date));
     }
 }

@@ -1,6 +1,6 @@
 package it.unicam.cs.PAWNProjectBackend.service;
 
-import it.unicam.cs.PAWNProjectBackend.model.User;
+import it.unicam.cs.PAWNProjectBackend.model.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,19 +12,52 @@ import java.util.Date;
 public class HandlerPrenotazione {
 
     private final DBMSController dbmsController;
+    private final HandlerSpiaggia handlerSpiaggia;
+    private final HandlerListino handlerListino;
 
-    public void prenotaOmbrellone() {
+    /**
+     *
+     * @param date
+     * @param numeroLettini
+     * @param idOmbrellone
+     * @param username
+     */
+    public void prenotaOmbrellone(Date date, Integer numeroLettini, Long idOmbrellone, String username) {
+        this.handlerSpiaggia.aggiornaSpiaggiaFromDb();
+        User user = this.dbmsController.getUserByUserName(username);
+        Ombrellone ombrellone = this.handlerSpiaggia.getSpiaggiaGestita().getOmbrelloneById(idOmbrellone);
+        Prenotazione prenotazione = new Prenotazione(user,ombrellone,numeroLettini,date);
+        Double prezzo = this.calcolaPrezzoPrenotazione(ombrellone,numeroLettini);
+        prenotazione.setPrezzoTotale(prezzo);
+        this.dbmsController.salvaPrenotazione(prenotazione);
+        System.out.println(prenotazione);
     }
 
-    public Collection<Integer> getOmbrelloniPrenotabili(Date data) {
+    private Double calcolaPrezzoPrenotazione(Ombrellone ombrellone, Integer numeroLettini) {
+        Listino listino = this.handlerListino.getListinoGestito();
+        double prezzo = 0.0;
+        Double moltiplicatoreTipologia = listino.getPrezziTipologia().stream()
+                .filter(t -> t.getTipologiaOmbrellone().equals(ombrellone.getTipologia()))
+                .map(ListinoTipologiaOmbrelloneRel::getPrezzo).findFirst().orElseThrow();
+        Double moltiplicatoreFascia = listino.getPrezziFascia().stream()
+                .filter(f -> f.getFasciaDiPrezzo().getRigheComprese().contains(ombrellone.getLocation().getYAxis()))
+                .map(ListinoFasciaDiPrezzoRel::getPrezzo).findFirst().orElseThrow();
 
-        return null;
+        prezzo = (((prezzo + listino.getPrezzoBaseLettino()) * moltiplicatoreFascia) * moltiplicatoreTipologia)
+                + (listino.getPrezzoBaseLettino() * numeroLettini);
+        return prezzo;
     }
 
-    public String hasReservations(User user) {
-        if(this.dbmsController.getPrenotazioniUtente(user).isEmpty()) return "false";
-        return "true";
+    /**
+     *
+     * @param user
+     * @return
+     */
+    public boolean hasReservations(User user) {
+        return !this.dbmsController.getPrenotazioniUtente(user).isEmpty();
     }
+
+
 
     /*private final HandlerSpiaggia handlerSpiaggiaAssociato;
     private ArrayList<Prenotazione> listaPrenotazioni;

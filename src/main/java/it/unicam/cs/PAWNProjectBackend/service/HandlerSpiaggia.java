@@ -21,13 +21,18 @@ public class HandlerSpiaggia {
     private final DBMSController dbmsController;
 
 
+    public void aggiornaSpiaggiaFromDb(){
+        this.spiaggiaGestita = this.dbmsController.getSpiaggia();
+    }
+
+
     /**
      * Questo metodo serve ad aggiungere un ombrellone
      * @param tipo la tipologia dell'ombrellone
      * @param coordinateScelte coordinate in cui aggiungere l'ombrellone
      */
     public void aggiungiOmbrellone(TipologiaOmbrellone tipo , Coordinate coordinateScelte) {
-        this.spiaggiaGestita = this.dbmsController.getSpiaggia();
+        this.aggiornaSpiaggiaFromDb();
         Ombrellone ombrellone = this.spiaggiaGestita.getOmbrelloneAtLocation(coordinateScelte);
         ombrellone.setTipologia(tipo);
         this.spiaggiaGestita.aggiornaTotaleOmbrelloni();
@@ -41,7 +46,7 @@ public class HandlerSpiaggia {
      * @param id l'id dell'ombrellone
      */
     public void deleteOmbrelloneById(Long id) {
-        this.spiaggiaGestita = this.dbmsController.getSpiaggia();
+        this.aggiornaSpiaggiaFromDb();
         Ombrellone ombrellone = this.spiaggiaGestita.getOmbrelloneById(id);
         log.info("ombrellone eliminato pre: {}", ombrellone);
         this.spiaggiaGestita.deleteOmbrellone(ombrellone);
@@ -80,7 +85,7 @@ public class HandlerSpiaggia {
      */
     public void modificaGrigliaSpiaggia(ArrayList<Integer> griglia, ArrayList<Long> listaIdOmbrelloni){
         ArrayList<Ombrellone> listaOmbrelloniModificata =  new ArrayList<>();
-        this.spiaggiaGestita = this.dbmsController.getSpiaggia();
+        this.aggiornaSpiaggiaFromDb();
         int contatoreTotale = 0;
         for(int i=0 ; i<griglia.size(); i++){
             for(int j=0; j<griglia.get(i); j++){

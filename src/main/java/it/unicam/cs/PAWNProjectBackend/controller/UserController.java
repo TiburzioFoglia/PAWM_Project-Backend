@@ -40,7 +40,7 @@ public class UserController {
 
     @GetMapping("/hasReservations")
     @PreAuthorize("hasRole('User')")
-    public String hasReservations(@RequestParam String userName){
+    public boolean hasReservations(@RequestParam String userName){
         User user = this.dbmsController.getUserByUserName(userName);
         return this.handlerPrenotazione.hasReservations(user);
     }

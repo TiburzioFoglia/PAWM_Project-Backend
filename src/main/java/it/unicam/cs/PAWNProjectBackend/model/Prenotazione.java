@@ -25,7 +25,7 @@ public class Prenotazione {
     @Relationship(type = "Prenotato_da",direction = Relationship.Direction.OUTGOING)
     private User user;
 
-    private Date data;
+    private Long dataInMillis;
 
     private Integer numeroLettini;
 
@@ -35,4 +35,10 @@ public class Prenotazione {
     private Ombrellone ombrellone;
 
 
+    public Prenotazione(User user, Ombrellone ombrellone, Integer numeroLettini, Date date) {
+        this.user = user;
+        this.dataInMillis = date.getTime();
+        this.numeroLettini = numeroLettini;
+        this.ombrellone = ombrellone;
+    }
 }

@@ -16,7 +16,7 @@ public class JwtUtil {
 
     private static final String SECRET_KEY = "prova_secret_key";
 
-    private static final int TOKEN_VALIDITY = 3600 * 5; //sec
+    private static final int TOKEN_VALIDITY = 3600 * 2;
 
     public String getUserNameFromToken(String token){
         return getClaimFromToken(token, Claims::getSubject);

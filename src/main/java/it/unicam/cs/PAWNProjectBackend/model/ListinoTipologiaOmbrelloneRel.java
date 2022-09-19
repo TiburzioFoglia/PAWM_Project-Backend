@@ -10,6 +10,7 @@ import org.springframework.data.neo4j.core.schema.TargetNode;
 @Data
 @NoArgsConstructor
 public class ListinoTipologiaOmbrelloneRel {
+
     @RelationshipId
     private Long id;
 
